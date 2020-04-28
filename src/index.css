@@ -8,29 +8,44 @@
 
 h1 {
   @apply text-5xl;
+  font-family: "Heebo";
 }
 
 h2 {
   @apply text-4xl;
+  font-family: "Heebo";
 }
 
 h3 {
   @apply text-3xl;
+  font-family: "Heebo";
 }
 
 h4 {
   @apply text-2xl;
+  font-family: "Heebo";
 }
 
 h5 {
   @apply text-xl;
+  font-family: "Heebo";
 }
 
 h6 {
   @apply text-lg;
+  font-family: "Heebo";
 }
 
 p,
 label {
   @apply text-base;
+  font-family: "Roboto";
+}
+
+.react-datepicker__input-container input {
+  background-color: hsl(0, 0%, 100%);
+  border-color: hsl(0, 0%, 80%);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
 }

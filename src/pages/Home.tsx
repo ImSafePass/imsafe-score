@@ -1,9 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Papa from "papaparse";
 
+import { url, NytObject, arrayToStateObject, CSVRow } from "../utils/nyt";
 import TestCard from "../components/TestCard";
 
 export default () => {
   const [testNum, setTestNum] = useState(1);
+  const [caseData, setCaseData] = useState<NytObject | undefined>(undefined);
+
+  const getCaseData = () => {
+    if (caseData) return;
+    fetch(url)
+      .then((r) => r.text())
+      .then((csv) => {
+        const json = Papa.parse(csv, { header: true });
+        const stateObject: NytObject = arrayToStateObject(
+          json.data as CSVRow[]
+        );
+        setCaseData(stateObject);
+      });
+  };
+
+  useEffect(getCaseData);
 
   return (
     <div className="my-10">
@@ -12,20 +30,9 @@ export default () => {
           .fill(null)
           .map((n, i) => (
             <div key={i} className="flex flex-col items-center">
-              <TestCard />
-              <button
-                onClick={() => setTestNum(testNum + 1)}
-                className="my-10 bg-red-600 rounded-full w-10 h-10 font-bold flex items-center justify-center hover:bg-red-700 text-white text-xl transition-colors duration-300"
-              >
-                <span>+</span>
-              </button>
+              {!caseData ? "Loading" : <TestCard caseData={caseData} />}
             </div>
           ))}
-      </div>
-      <div className="flex flex-col my-10 justify-start items-center">
-        <button className="bg-blue hover:bg-blue-200 p-3 text-white rounded-md transition-colors duration-300">
-          View Results
-        </button>{" "}
       </div>
     </div>
   );
