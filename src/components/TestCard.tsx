@@ -12,14 +12,18 @@ interface Props {
   caseData: NytObject;
 }
 
-const options: OptionTypeBase[] = ["Abbot Architect", "Roche PCR"].map((s) => ({
-  value: s,
-  label: s,
-}));
+const stringArrayToOptionType = (stringArray: string[]): OptionTypeBase[] =>
+  stringArray.map((s) => ({ label: s, value: s }));
 
-interface CountyData {
-  [state: string]: string[];
-}
+const testTypeOptions: OptionTypeBase[] = stringArrayToOptionType([
+  "Antibody",
+  "PCR",
+]);
+
+const testOptions: OptionTypeBase[] = stringArrayToOptionType([
+  "Abbot Architect",
+  "Roche PCR",
+]);
 
 export default ({ caseData }: Props) => {
   const [countyOptions, setCountyOptions] = useState<OptionTypeBase[]>([]);
@@ -27,7 +31,6 @@ export default ({ caseData }: Props) => {
   const [county, setCounty] = useState<OptionTypeBase | null>(null);
   const [testDate, setTestDate] = useState<Date | null>(null);
   const [test, setTest] = useState<OptionTypeBase | null>(null);
-  const [step, setStep] = useState(0);
 
   const stateOptions: OptionTypeBase[] = Object.keys(caseData)
     .sort()
@@ -90,7 +93,7 @@ export default ({ caseData }: Props) => {
         </div>
 
         {countyData && state && county ? (
-          <p>
+          <p className="my-4">
             As of{" "}
             <span className="font-bold">{formatDate(countyData.date)}</span>,
             NYT tracking data reported{" "}
@@ -101,26 +104,25 @@ export default ({ caseData }: Props) => {
             deaths.
           </p>
         ) : null}
+
         {countyData ? <Prevalence cases={countyData.cases} /> : null}
 
-        {step > 0 ? (
-          <>
-            <p>2. When were you tested?</p>
-            <label className="font-bold mb-2">Test Date</label>
+        {county ? (
+          <div className="my-4">
+            <h5>2. When were you tested?</h5>
             <DatePicker
               className="w-40 p-1 rounded-md mb-4"
               selected={testDate}
               onChange={(date: Date) => {
                 setTestDate(date);
-                setStep(step + 1);
               }}
               maxDate={today}
             />
-          </>
+          </div>
         ) : null}
 
-        {step > 1 ? (
-          <>
+        {testDate ? (
+          <div className="my-4">
             <label className="font-bold mb-2">Test Name</label>
             <Select
               className="w-40 p-1 rounded-md mb-4"
@@ -128,9 +130,9 @@ export default ({ caseData }: Props) => {
               onChange={(opt: OptionTypeBase) => {
                 setTest(opt);
               }}
-              options={options}
+              options={testOptions}
             />
-          </>
+          </div>
         ) : null}
         {/* <input type="submit" /> */}
       </form>
