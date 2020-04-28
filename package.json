@@ -29,7 +29,7 @@
   },
   "scripts": {
     "css": "tailwindcss build src/index.css -o src/index.generated.css",
-    "prebuild": "npm run build:tailwind",
+    "prebuild": "npm run css",
     "start": "react-scripts start",
     "s": "yarn start",
     "cs": "yarn css && yarn start",
