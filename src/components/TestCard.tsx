@@ -8,6 +8,7 @@ import { NytObject, NytState, formatDate } from "../utils/nyt";
 
 import Prevalence from "./Prevalence";
 import Loader from "./Loader";
+import DropdownQuestion from "./DropdownQuestion";
 
 interface Props {
   caseData?: NytObject;
@@ -129,24 +130,20 @@ export default ({ caseData }: Props) => {
             </div>
           ) : null}
 
-          {testDate ? (
-            <div className="mt-8">
-              <h4>3. What type of test did you take?</h4>
-              <Select
-                className="w-40 p-1 rounded-md my-2"
-                placeholder="Test type"
-                value={testType}
-                onChange={(opt: OptionTypeBase) => {
-                  setTestType(opt);
-                }}
-                options={testTypeOptions}
-              />
-            </div>
-          ) : null}
+          <DropdownQuestion
+            gate={testDate}
+            value={testType}
+            text="3. What type of test did you take?"
+            options={testTypeOptions}
+            set={setTestType}
+          />
 
           {testType ? (
             <div className="mt-8">
-              <h4>3. Which {testType.label} test did you take?</h4>
+              <h4>
+                4. Which {testType ? `${testType.label} ` : ""}test did you
+                take?
+              </h4>
               <Select
                 className="w-40 p-1 rounded-md my-2"
                 placeholder="Test name"
@@ -158,6 +155,7 @@ export default ({ caseData }: Props) => {
               />
             </div>
           ) : null}
+
           {test ? (
             <input
               className="p-4 bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white my-4 rounded-md cursor-pointer"
