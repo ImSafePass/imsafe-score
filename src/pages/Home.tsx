@@ -30,7 +30,7 @@ export default () => {
           .fill(null)
           .map((n, i) => (
             <div key={i} className="flex flex-col items-center">
-              {!caseData ? "Loading" : <TestCard caseData={caseData} />}
+              <TestCard caseData={caseData} />
             </div>
           ))}
       </div>

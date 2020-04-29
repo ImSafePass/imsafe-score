@@ -38,11 +38,12 @@ const caseObject = (
 ) => ({
   cases: parseInt(current.cases) + prev.cases,
   deaths: parseInt(current.deaths) + prev.deaths,
-  date: new Date(current.date) > prev.date ? new Date() : prev.date,
+  date: new Date(current.date) > prev.date ? new Date(current.date) : prev.date,
 });
 
 export const arrayToStateObject = (array: CSVRow[]) => {
   const stateObject: NytObject = {};
+
   array.forEach(({ county, state, cases, deaths, date }) => {
     if (stateObject[state]) {
       const prev = stateObject[state][county] || {

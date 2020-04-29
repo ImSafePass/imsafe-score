@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface Model {
   lowBoundMult: number;
@@ -30,8 +30,6 @@ const defaultModels: Model[] = [
 ];
 
 const Prevalence = ({ models = defaultModels, cases = 28 }: Props) => {
-  const [width, setWidth] = useState(400);
-  const startX = width / 20;
   const highestPrevalence = Math.max(...models.map((m) => m.highBoundMult));
 
   const lowestPrevalence = Math.min(...models.map((m) => m.lowBoundMult));
@@ -39,18 +37,8 @@ const Prevalence = ({ models = defaultModels, cases = 28 }: Props) => {
   const trackLength = highestPrevalence - lowestPrevalence;
 
   return (
-    <div
-      className="prevalence w-full relative h-10 bg-gray-300"
-      ref={(node) => {
-        if (node) {
-          setWidth(node.getBoundingClientRect().width);
-        }
-      }}
-    >
-      <div
-        className="absolute h-full"
-        style={{ left: startX, width: width - 2 * startX }}
-      >
+    <div className="prevalence w-full relative h-10 bg-gray-300">
+      <div className="absolute h-full" style={{ left: "5%", width: "90%" }}>
         {models.map((model) => {
           return (
             <div
@@ -63,7 +51,7 @@ const Prevalence = ({ models = defaultModels, cases = 28 }: Props) => {
                   ((model.highBoundMult - model.lowBoundMult) / trackLength) *
                   100
                 }%`,
-                backgroundColor: `rgb(51, 65, 192, 0.2)`,
+                backgroundColor: `rgba(51, 65, 192, 0.2)`,
               }}
               key={model.meanMult}
             >
