@@ -138,23 +138,15 @@ export default ({ caseData }: Props) => {
             set={setTestType}
           />
 
-          {testType ? (
-            <div className="mt-8">
-              <h4>
-                4. Which {testType ? `${testType.label} ` : ""}test did you
-                take?
-              </h4>
-              <Select
-                className="w-40 p-1 rounded-md my-2"
-                placeholder="Test name"
-                value={test}
-                onChange={(opt: OptionTypeBase) => {
-                  setTest(opt);
-                }}
-                options={testOptions}
-              />
-            </div>
-          ) : null}
+          <DropdownQuestion
+            gate={testType}
+            value={test}
+            text={`4. Which ${
+              testType ? `${testType.label} ` : ""
+            }test did you take?`}
+            set={setTest}
+            options={testOptions}
+          />
 
           {test ? (
             <input
