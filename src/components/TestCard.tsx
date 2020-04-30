@@ -1,10 +1,11 @@
 import React, { useState, FormEvent } from "react";
 import Select, { OptionTypeBase } from "react-select";
 import DatePicker from "react-datepicker";
+import get from "lodash.get";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import { NytObject, NytState, formatDate } from "../utils/nyt";
+import { NytObject, NytState, PrevalencePoint } from "../utils/nyt";
 
 import Prevalence from "./Prevalence";
 import Loader from "./Loader";
@@ -50,8 +51,14 @@ export default ({ caseData }: Props) => {
 
   const today = new Date();
 
-  const countyData =
-    caseData && state && county && caseData[state.value][county.value];
+  const dataPoint: PrevalencePoint | undefined = (get(
+    caseData,
+    `${state && state.label}.${county && county.label}.${
+      testDate?.toISOString().split("T")[0]
+    }`
+  ) as unknown) as PrevalencePoint;
+
+  console.log(caseData, state, county, testDate, dataPoint);
 
   return (
     <div className="card min-h-10">
@@ -99,24 +106,9 @@ export default ({ caseData }: Props) => {
                 </div>
               ) : null}
             </div>
-
-            {countyData && state && county ? (
-              <p className="m5-4">
-                As of{" "}
-                <span className="font-bold">{formatDate(countyData.date)}</span>
-                , NYT tracking data reported{" "}
-                <span className="font-bold"> {county.label}</span>,{" "}
-                <span className="font-bold">{state.label}</span> as having{" "}
-                <span className="font-bold">{countyData.cases}</span> total
-                cases, resulting in{" "}
-                <span className="font-bold">{countyData.deaths}</span> deaths.
-              </p>
-            ) : null}
-
-            {countyData ? <Prevalence cases={countyData.cases} /> : null}
           </div>
 
-          {countyData ? (
+          {county ? (
             <div className="mt-8">
               <h4>2. When were you tested?</h4>
               <DatePicker
@@ -129,6 +121,17 @@ export default ({ caseData }: Props) => {
               />
             </div>
           ) : null}
+
+          <div className="my-4">
+            {dataPoint && testDate && state && county ? (
+              <Prevalence
+                dataPoint={dataPoint}
+                date={testDate}
+                state={state.label}
+                county={county.label}
+              />
+            ) : null}
+          </div>
 
           <DropdownQuestion
             gate={testDate}
@@ -150,7 +153,7 @@ export default ({ caseData }: Props) => {
 
           {test ? (
             <input
-              className="p-4 bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white my-4 rounded-md cursor-pointer"
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white my-4 rounded-md cursor-pointer max-w-sm"
               type="submit"
               value="See Results"
             />

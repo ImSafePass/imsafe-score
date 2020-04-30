@@ -1,14 +1,19 @@
+import set from "lodash.set";
+
 export const url =
   "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv";
 
-export interface NytCounty {
+export interface PrevalencePoint {
   cases: number;
   deaths: number;
-  date: Date;
+}
+
+export interface NytCounty {
+  [date: string]: PrevalencePoint;
 }
 
 export interface NytState {
-  [key: string]: NytCounty;
+  [state: string]: NytCounty;
 }
 
 export interface NytObject {
@@ -23,38 +28,22 @@ export interface CSVRow {
   date: string;
 }
 
-export const formatDate = (d: Date) =>
-  `${d.getMonth()}-${d.getDate()}-${d.getFullYear()}`;
-const lastYear = new Date();
-lastYear.setFullYear(2018);
-
-const caseObject = (
-  current: { cases: string; deaths: string; date: string },
-  prev: { cases: number; deaths: number; date: Date } = {
-    cases: 0,
-    deaths: 0,
-    date: lastYear,
-  }
-) => ({
-  cases: parseInt(current.cases) + prev.cases,
-  deaths: parseInt(current.deaths) + prev.deaths,
-  date: new Date(current.date) > prev.date ? new Date(current.date) : prev.date,
+const toPoint = ({
+  cases,
+  deaths,
+}: {
+  cases: string;
+  deaths: string;
+}): PrevalencePoint => ({
+  cases: parseInt(cases),
+  deaths: parseInt(deaths),
 });
 
 export const arrayToStateObject = (array: CSVRow[]) => {
   const stateObject: NytObject = {};
 
   array.forEach(({ county, state, cases, deaths, date }) => {
-    if (stateObject[state]) {
-      const prev = stateObject[state][county] || {
-        cases: 0,
-        deaths: 0,
-        date: lastYear,
-      };
-      stateObject[state][county] = caseObject({ cases, deaths, date }, prev);
-    } else {
-      stateObject[state] = { [county]: caseObject({ cases, deaths, date }) };
-    }
+    set(stateObject, `${state}.${county}.${date}`, toPoint({ cases, deaths }));
   });
 
   return stateObject;
