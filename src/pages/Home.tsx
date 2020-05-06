@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Papa from "papaparse";
 
 import { url, NytObject, arrayToStateObject, CSVRow } from "../utils/nyt";
-import TestCard from "../components/TestCard";
+import Test from "../components/Test";
 
 export default () => {
   const [testNum, setTestNum] = useState(1);
@@ -30,7 +30,7 @@ export default () => {
           .fill(null)
           .map((n, i) => (
             <div key={i} className="flex flex-col items-center">
-              <TestCard caseData={caseData} />
+              <Test caseData={caseData} />
             </div>
           ))}
       </div>

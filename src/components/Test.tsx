@@ -10,6 +10,7 @@ import { NytObject, NytState, PrevalencePoint } from "../utils/nyt";
 import Prevalence from "./Prevalence";
 import Loader from "./Loader";
 import DropdownQuestion from "./DropdownQuestion";
+import Diagram from "./Diagram";
 
 interface Props {
   caseData?: NytObject;
@@ -37,12 +38,7 @@ export default ({ caseData }: Props) => {
   const [testType, setTestType] = useState<OptionTypeBase | null>(null);
 
   const stateOptions: OptionTypeBase[] = caseData
-    ? Object.keys(caseData)
-        .sort()
-        .map((state) => ({
-          value: state,
-          label: state,
-        }))
+    ? stringArrayToOptionType(Object.keys(caseData).sort())
     : [];
 
   const onSubmit = (event: FormEvent) => {
@@ -51,6 +47,9 @@ export default ({ caseData }: Props) => {
 
   const today = new Date();
 
+  // @ts-ignore
+  window.cs = caseData;
+
   const dataPoint: PrevalencePoint | undefined = (get(
     caseData,
     `${state && state.label}.${county && county.label}.${
@@ -58,14 +57,12 @@ export default ({ caseData }: Props) => {
     }`
   ) as unknown) as PrevalencePoint;
 
-  console.log(caseData, state, county, testDate, dataPoint);
-
   return (
     <div className="card min-h-10">
       {caseData ? (
         <form onSubmit={onSubmit} className="flex flex-col">
           <div className="my-4">
-            <h4>1. Where do you live?</h4>
+            <h4>1. Where are you located?</h4>
             <div className="flex flex-row items-center">
               <div className="w-40 mr-10 my-10">
                 <Select
@@ -162,6 +159,7 @@ export default ({ caseData }: Props) => {
       ) : (
         <Loader />
       )}
+      <Diagram />
     </div>
   );
 };
