@@ -1,8 +1,9 @@
-import React, { useState, ComponentType } from "react";
+import React, { ComponentType } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import Select, { OptionTypeBase } from "react-select";
 import DatePicker from "react-datepicker";
+import queryString from "query-string";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -23,6 +24,8 @@ import {
   setCounty,
   setTestResult,
 } from "../redux/actions";
+import { updateSearch } from "../utils/url";
+import { brief } from "../utils/date";
 
 interface Props {
   stateOptions: string[];
@@ -85,7 +88,7 @@ const Test = ({
   testResult,
   tests,
 }: Props) => {
-  const [testType, setTestType] = useState<OptionTypeBase | undefined>();
+  const qs = queryString.parse(window.location.search);
 
   const today = new Date();
 
@@ -96,27 +99,28 @@ const Test = ({
         <Select
           className="w-40 p-1 rounded-md my-2"
           placeholder="Test name"
-          value={testType}
+          value={qs.type && stringToOptionType(qs.type as string)}
           onChange={(opt: OptionTypeBase) => {
-            setTestType(opt);
+            updateSearch({ type: opt.value, test: null });
             dispatch(setTest(undefined));
           }}
           options={stringArrayToOptionType(testTypes)}
         />
       </div>
-      {testType ? (
+      {qs.type ? (
         <div className="mt-8">
-          <h4>Which {testType.label} test did you take?</h4>
+          <h4>Which {(qs.type as string).toLowerCase()} test did you take?</h4>
           <Select
             className="w-40 p-1 rounded-md my-2"
             placeholder="Test name"
             value={test && { value: test, label: test.diagnostic }}
             // @ts-ignore
             onChange={(opt: TestOption) => {
+              updateSearch({ test: opt.value.id });
               dispatch(setTest(opt.value));
             }}
             options={tests
-              .filter((test) => test.type === testType.label)
+              .filter((test) => test.type === qs.type)
               .map((t) => ({ value: t, label: t.diagnostic }))}
           />
         </div>
@@ -130,6 +134,7 @@ const Test = ({
             className="w-40 p-1 rounded-md my-4"
             selected={testDate}
             onChange={(date: Date) => {
+              updateSearch({ date: brief(date) });
               dispatch(setTestDate(date));
             }}
             maxDate={today}
@@ -137,7 +142,7 @@ const Test = ({
         </div>
       ) : null}
 
-      {testType && test && testDate ? (
+      {qs.type && test && testDate ? (
         <div className="my-4">
           <h4>Where are you located?</h4>
           <div className="flex flex-row items-center">
@@ -150,6 +155,7 @@ const Test = ({
                 placeholder="State"
                 isSearchable
                 onChange={(opt: OptionTypeBase) => {
+                  updateSearch({ state: opt.value, county: null });
                   dispatch(setState(opt.value));
                   dispatch(setCounty(undefined));
                 }}
@@ -166,6 +172,7 @@ const Test = ({
                   value={location.county && stringToOptionType(location.county)}
                   isSearchable
                   onChange={(opt: OptionTypeBase) => {
+                    updateSearch({ county: opt.value });
                     dispatch(setCounty(opt.value));
                   }}
                 />
@@ -189,6 +196,7 @@ const Test = ({
             placeholder="Test name"
             value={stringToOptionType(testResult)}
             onChange={(opt: OptionTypeBase) => {
+              updateSearch({ result: opt.value });
               dispatch(setTestResult(opt.value));
             }}
             options={stringArrayToOptionType(testResults)}

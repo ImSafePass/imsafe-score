@@ -150,6 +150,10 @@ export const getPrevalenceFromState = (state: ReduxState) => {
   const prevalenceMultiples = state.prevalenceMultiples as PrevalenceMultiples;
   const test = state.test as TestRecord;
 
+  if (!stateCorrections || !prevalenceMultiples) {
+    return undefined;
+  }
+
   const stateCorrection = stateCorrections[location.state as string];
 
   const countyData = get(nyt, [

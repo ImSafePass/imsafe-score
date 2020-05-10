@@ -8,10 +8,12 @@ import {
   Prevalence,
   fullTestType,
 } from "../utils/prevalence";
+
 import Link from "./Link";
+import Loader from "./Loader";
 
 interface Props {
-  prevalence: Prevalence;
+  prevalence?: Prevalence;
   test: TestRecord;
   testResult: TestResult;
 }
@@ -23,6 +25,13 @@ const mapStateToProps = (state: ReduxState) => ({
 });
 
 const ResultsCard = ({ prevalence, testResult, test }: Props) => {
+  if (!prevalence || !test || !testResult) {
+    return (
+      <div className="card">
+        <Loader />
+      </div>
+    );
+  }
   let content: null | ReactElement = null;
   const res = testResult.toLowerCase();
 

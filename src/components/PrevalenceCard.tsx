@@ -10,10 +10,11 @@ import {
   fullTestType,
   activeInfectionLengthDays,
 } from "../utils/prevalence";
+import Loader from "./Loader";
 
 interface Props {
   location: LocationState;
-  prevalence: Prevalence;
+  prevalence?: Prevalence;
   testDate: Date;
   test: TestRecord;
 }
@@ -26,6 +27,14 @@ const mapStateToProps = (state: ReduxState) => ({
 });
 
 const PrevalenceCard = ({ location, prevalence, test }: Props) => {
+  if (!prevalence) {
+    return (
+      <div className="card">
+        <Loader />
+      </div>
+    );
+  }
+
   const testDateExplainer =
     test.type === "Serology"
       ? `total number of cases existant prior to your earliest date of likely infection.`
