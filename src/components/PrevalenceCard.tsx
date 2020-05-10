@@ -11,12 +11,6 @@ import {
   activeInfectionLengthDays,
 } from "../utils/prevalence";
 
-interface Model {
-  lowBoundMult: number;
-  highBoundMult: number;
-  meanMult: number;
-}
-
 interface Props {
   location: LocationState;
   prevalence: Prevalence;
