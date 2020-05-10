@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 
-import { LocationState, ReduxState } from "../redux/reducer";
+import { ReduxState } from "../redux/reducer";
 import { TestRecord, TestResult } from "../utils/test";
 import {
   getPrevalenceFromState,
@@ -47,8 +47,8 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
       <>
         <p>
           The likelihood of your {res} test result being a "true", rather than a
-          "false" depends both on your "prior likelihood" of infection and on
-          the specificity and sensitivity of your test. This calculation is
+          "false" {res} depends both on your "prior likelihood" of infection and
+          on the specificity and sensitivity of your test. This calculation is
           called Bayes Theorem.
         </p>
         <p>
@@ -58,10 +58,9 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
           </Link>{" "}
           asserts that the probability of you being a "true" {res}, given your{" "}
           {res} test result, is defined as the probability that you would test{" "}
-          {res} if you were truly {testResult.toLowerCase}, multiplied by your
-          prior probability of truly being {res}, all divided by your estimated
-          probability of testing {res} given no particular information about you
-          at all.
+          {res} if you were truly {res}, multiplied by your prior probability of
+          truly being {res}, all divided by your estimated probability of
+          testing {res} given no testing information.
         </p>
         <p>
           You took the {test.diagnostic} {fullTestType(test.type)} diagnostic,

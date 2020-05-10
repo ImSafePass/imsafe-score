@@ -13,6 +13,14 @@ const getCountyPopulation = async () => {
 
   console.log("\nAirtable fetch complete.\nWriting files.\n");
 
+  await fs.mkdirSync(
+    "./src/data/county-populations",
+    { recursive: true },
+    (err) => {
+      if (err) console.error(err);
+    }
+  );
+
   await Object.keys(airtableData).forEach(async (state) => {
     await fs.writeFileSync(
       `./src/data/county-populations/${state}.js`,

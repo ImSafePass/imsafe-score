@@ -3,8 +3,18 @@ import { OptionTypeBase } from "react-select";
 import { isValidDate } from "./date";
 import { LowMidHigh } from "../redux/reducer";
 
-export type TestType = "Serology" | "Molecular";
-export type TestResult = "Positive" | "Negative" | "Indeterminate";
+/** PRIVATE INTERFACES  */
+
+type ConfidenceIntervalKey =
+  | "manufacturer_test_of_specificity_95%_ci"
+  | "manufacturer_test_of_sensitivity_95%_ci"
+  | "independent_test_of_specificity_95%_ci"
+  | "independent_test_of_sensitivity_95%_ci";
+type SensitivityKey =
+  | "independent_test_of_sensitivity"
+  | "manufacturer_test_of_sensitivity";
+
+type TestEntity = "independent" | "manufacturer";
 
 interface TestRecordFields {
   diagnostic: string;
@@ -35,6 +45,11 @@ interface TestRecordFields {
   type: string;
 }
 
+/** PUBLIC INTERFACES */
+
+export type TestType = "Serology" | "Molecular";
+export type TestResult = "Positive" | "Negative" | "Indeterminate";
+
 export interface ApiTestRecord {
   id: string;
   createdTime: string;
@@ -61,12 +76,6 @@ export interface TestRecord {
   documentLink?: string;
 }
 
-type ConfidenceIntervalKey =
-  | "manufacturer_test_of_specificity_95%_ci"
-  | "manufacturer_test_of_sensitivity_95%_ci"
-  | "independent_test_of_specificity_95%_ci"
-  | "independent_test_of_sensitivity_95%_ci";
-
 export interface TestOption extends OptionTypeBase {
   label: string;
   value: TestRecord;
@@ -77,11 +86,7 @@ export interface TestRecordResults {
   testOptions: TestOption[];
 }
 
-type SensitivityKey =
-  | "independent_test_of_sensitivity"
-  | "manufacturer_test_of_sensitivity";
-
-type TestEntity = "independent" | "manufacturer";
+/** PRIVATE FUNCTIONS */
 
 const parseSpecificitySensitivity = (
   fields: TestRecordFields,
@@ -109,7 +114,7 @@ const parseSpecificitySensitivity = (
   };
 };
 
-export const parseTestRecord = (record: ApiTestRecord): TestRecord | null => {
+const parseTestRecord = (record: ApiTestRecord): TestRecord | null => {
   const { fields, id, createdTime } = record;
   const {
     diagnostic,
@@ -169,6 +174,7 @@ export const parseTestRecord = (record: ApiTestRecord): TestRecord | null => {
   };
 };
 
+/** PUBLIC FUNCTION */
 export const getTestRecords = (records: ApiTestRecord[]): TestRecord[] => {
   const testRecords: TestRecord[] = [];
 

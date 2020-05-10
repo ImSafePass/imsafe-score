@@ -32,7 +32,6 @@ const mapStateToProps = (state: ReduxState) => ({
 });
 
 const PrevalenceCard = ({ location, prevalence, test }: Props) => {
-  console.log(prevalence);
   const testDateExplainer =
     test.type === "Serology"
       ? `total number of cases existant prior to your earliest date of likely infection.`
