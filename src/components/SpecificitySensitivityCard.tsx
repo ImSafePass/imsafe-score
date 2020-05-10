@@ -33,7 +33,7 @@ const SensitivitySpecificityCard = ({ test }: Props) => {
     <>
       <strong>{measure.mid}%</strong>
       {measure.low
-        ? ` (${measure.low}% to ${specificity.high}% with 95% confidence)`
+        ? ` (${measure.low}% to ${measure.high}% with 95% confidence)`
         : ""}
     </>
   );

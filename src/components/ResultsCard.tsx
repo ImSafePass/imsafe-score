@@ -31,8 +31,8 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
       <p>We can apply no further analysis to indeterminate test results.</p>
     );
   } else {
-    const sensitivity = test.sensitivity.mid as number;
-    const specificity = test.specificity.mid as number;
+    const sensitivity = (test.sensitivity.mid as number) / 100;
+    const specificity = (test.specificity.mid as number) / 100;
     const percent =
       prevalence.estimatedCaseObject.mid / prevalence.basePopulation;
 
@@ -42,7 +42,12 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
           (sensitivity * percent + (1 - specificity) * (1 - percent))
         : (specificity * (1 - percent)) /
           (specificity * (1 - percent) + (1 - sensitivity) * percent);
+    console.log({ specificity, sensitivity, prevalence, result });
+    /**
+ =( Sensitivity * Bayesian Prior )/(( Sensitivity * Bayesian Prior )+(( 1 - Specificity )*( 1 - Bayesian Prior))
 
+ =( Specificity * (1 - Bayesian Prior ))/(( Specificity * ( 1- Bayesian Prior ))+(( 1 - Sensitivity ) * Bayesian Prior))
+     */
     content = (
       <>
         <p>

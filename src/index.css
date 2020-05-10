@@ -11,34 +11,14 @@ h1 {
   font-family: "Heebo";
 }
 
-h2 {
-  @apply text-4xl;
-  font-family: "Heebo";
-}
-
 h3 {
-  @apply text-3xl;
-  font-family: "Heebo";
-}
-
-h4 {
-  @apply text-2xl;
-  font-family: "Heebo";
-}
-
-h5 {
-  @apply text-xl;
-  font-family: "Heebo";
-}
-
-h6 {
-  @apply text-lg;
+  @apply text-4xl;
   font-family: "Heebo";
 }
 
 p,
 label {
-  @apply text-base;
+  @apply text-lg;
   font-family: "Roboto";
 }
 

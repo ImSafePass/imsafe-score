@@ -3,49 +3,7 @@ import { OptionTypeBase } from "react-select";
 import { isValidDate } from "./date";
 import { LowMidHigh } from "../redux/reducer";
 
-/** PRIVATE INTERFACES  */
-
-type ConfidenceIntervalKey =
-  | "manufacturer_test_of_specificity_95%_ci"
-  | "manufacturer_test_of_sensitivity_95%_ci"
-  | "independent_test_of_specificity_95%_ci"
-  | "independent_test_of_sensitivity_95%_ci";
-type SensitivityKey =
-  | "independent_test_of_sensitivity"
-  | "manufacturer_test_of_sensitivity";
-
-type TestEntity = "independent" | "manufacturer";
-
-interface TestRecordFields {
-  diagnostic: string;
-  diagnostic_detail: string;
-  eua_approval: string;
-  eua_listed_by_fda: string;
-  fda_document_link?: string;
-  fda_document_type: string;
-  independent_document_link: string;
-  independent_document_type: string;
-  "independent_test_of_sensitivity,_min_days_post_onset": string;
-  "independent_test_of_sensitivity_95%_ci": string;
-  independent_test_of_sensitivity: string;
-  "independent_test_of_specificity,_min_days_post_onset": string;
-  "independent_test_of_specificity_95%_ci": string;
-  independent_test_of_specificity: string;
-  manufacturer: string;
-  manufacturer_document_link: string;
-  manufacturer_document_type: string;
-  "manufacturer_test_of_sensitivity,_min_days_post_onset": string;
-  "manufacturer_test_of_sensitivity_95%_ci": string;
-  manufacturer_test_of_sensitivity: string;
-  "manufacturer_test_of_specificity,_min_days_post_onset": string;
-  "manufacturer_test_of_specificity_95%_ci": string;
-  manufacturer_test_of_specificity: string;
-  no_data: string;
-  notes_on_highlight: string;
-  type: string;
-}
-
-/** PUBLIC INTERFACES */
+/** PUBLIC */
 
 export type TestType = "Serology" | "Molecular";
 export type TestResult = "Positive" | "Negative" | "Indeterminate";
@@ -86,7 +44,65 @@ export interface TestRecordResults {
   testOptions: TestOption[];
 }
 
-/** PRIVATE FUNCTIONS */
+export const getTestRecords = (records: ApiTestRecord[]): TestRecord[] => {
+  const testRecords: TestRecord[] = [];
+
+  records.forEach((rec) => {
+    const result = parseTestRecord(rec);
+    if (result) {
+      testRecords.push(result);
+    }
+  });
+
+  return testRecords;
+};
+
+/** PRIVATE */
+
+type ConfidenceIntervalKey =
+  | "manufacturer_test_of_specificity_95%_ci"
+  | "manufacturer_test_of_sensitivity_95%_ci"
+  | "independent_test_of_specificity_95%_ci"
+  | "independent_test_of_sensitivity_95%_ci";
+type SensitivityKey =
+  | "independent_test_of_sensitivity"
+  | "manufacturer_test_of_sensitivity";
+
+type ScoreKey =
+  | SensitivityKey
+  | "independent_test_of_specificity"
+  | "manufacturer_test_of_specificity";
+
+type TestEntity = "independent" | "manufacturer";
+
+interface TestRecordFields {
+  diagnostic: string;
+  diagnostic_detail: string;
+  eua_approval: string;
+  eua_listed_by_fda: string;
+  fda_document_link?: string;
+  fda_document_type: string;
+  independent_document_link: string;
+  independent_document_type: string;
+  "independent_test_of_sensitivity,_min_days_post_onset": string;
+  "independent_test_of_sensitivity_95%_ci": string;
+  independent_test_of_sensitivity: string;
+  "independent_test_of_specificity,_min_days_post_onset": string;
+  "independent_test_of_specificity_95%_ci": string;
+  independent_test_of_specificity: string;
+  manufacturer: string;
+  manufacturer_document_link: string;
+  manufacturer_document_type: string;
+  "manufacturer_test_of_sensitivity,_min_days_post_onset": string;
+  "manufacturer_test_of_sensitivity_95%_ci": string;
+  manufacturer_test_of_sensitivity: string;
+  "manufacturer_test_of_specificity,_min_days_post_onset": string;
+  "manufacturer_test_of_specificity_95%_ci": string;
+  manufacturer_test_of_specificity: string;
+  no_data: string;
+  notes_on_highlight: string;
+  type: string;
+}
 
 const parseSpecificitySensitivity = (
   fields: TestRecordFields,
@@ -95,7 +111,7 @@ const parseSpecificitySensitivity = (
 ): SpecificityOrSensitivity => {
   const boundKey: ConfidenceIntervalKey = `${testEntity}_test_of_${scoreName}_95%_ci` as ConfidenceIntervalKey;
   const bound: string | undefined = fields[boundKey];
-  const midpointKey: SensitivityKey = `${testEntity}_test_of_sensitivity` as SensitivityKey;
+  const midpointKey: ScoreKey = `${testEntity}_test_of_${scoreName}` as ScoreKey;
 
   const midpoint = parseFloat(fields[midpointKey]);
   let low;
@@ -152,6 +168,13 @@ const parseTestRecord = (record: ApiTestRecord): TestRecord | null => {
     chosenTestEntity
   );
 
+  if (!specificity.mid || !sensitivity.mid) {
+    return null;
+  }
+
+  if (diagnostic === "Elecsys Anti-SARS-CoV-2") {
+    console.log({ specificity, sensitivity });
+  }
   const euaDate =
     eua_listed_by_fda &&
     eua_listed_by_fda.length &&
@@ -172,18 +195,4 @@ const parseTestRecord = (record: ApiTestRecord): TestRecord | null => {
     typeDetail: type,
     documentLink: manufacturer_document_link || independent_document_link,
   };
-};
-
-/** PUBLIC FUNCTION */
-export const getTestRecords = (records: ApiTestRecord[]): TestRecord[] => {
-  const testRecords: TestRecord[] = [];
-
-  records.forEach((rec) => {
-    const result = parseTestRecord(rec);
-    if (result) {
-      testRecords.push(result);
-    }
-  });
-
-  return testRecords;
 };
