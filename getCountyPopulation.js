@@ -11,21 +11,26 @@ const getCountyPopulation = async () => {
 
   airtableData["Missouri"]["Kansas City"] = 491918;
 
-  Object.keys(airtableData).forEach(async (state) => {
+  console.log("\nAirtable fetch complete.\nWriting files.\n");
+
+  await Object.keys(airtableData).forEach(async (state) => {
     await fs.writeFileSync(
-      `./data/county-populations/${state}.js`,
-      `export default ${airtableData[state]}`
+      `./src/data/county-populations/${state}.js`,
+      `export default ${JSON.stringify(airtableData[state])}`
     );
     console.log(`Wrote ${state} data.`);
   });
+
+  console.log("\nDone.");
 };
 
 const getAirtableData = async (airtableData = {}, offset = undefined) => {
-  const { AIRTABLE_API_KEY, AIRTABLE_COUNTY_POP_ID } = process.env;
-  let url = `https://api.airtable.com/v0/${AIRTABLE_COUNTY_POP_ID}/county_population?api_key=${AIRTABLE_API_KEY}`;
+  const { REACT_APP_AIRTABLE_API_KEY, AIRTABLE_COUNTY_POP_ID } = process.env;
+  let url = `https://api.airtable.com/v0/${AIRTABLE_COUNTY_POP_ID}/county_population?api_key=${REACT_APP_AIRTABLE_API_KEY}`;
   if (offset) {
     url = `${url}&offset=${offset}`;
   }
+  console.log("Fetching Airtable data with offset: ", offset);
 
   const results = await fetch(url);
   const json = await results.json();

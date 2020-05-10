@@ -1,165 +1,204 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, ComponentType } from "react";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 import Select, { OptionTypeBase } from "react-select";
 import DatePicker from "react-datepicker";
-import get from "lodash.get";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import { NytObject, NytState, PrevalencePoint } from "../utils/nyt";
+import { ReduxState } from "../redux/reducer";
 
-import Prevalence from "./Prevalence";
-import Loader from "./Loader";
-import DropdownQuestion from "./DropdownQuestion";
-import Diagram from "./Diagram";
+import { TestOption, TestRecord, TestResult } from "../utils/test";
+import { NytObject } from "../utils/nyt";
+import { LocationState } from "../redux/reducer";
+
+import PrevalenceCard from "./PrevalenceCard";
+import SpecificitySensitivityCard from "./SpecificitySensitivityCard";
+import ResultsCard from "./ResultsCard";
+
+import {
+  setTestDate,
+  setTest,
+  setState,
+  setCounty,
+  setTestResult,
+} from "../redux/actions";
 
 interface Props {
-  caseData?: NytObject;
+  stateOptions: string[];
+  countyOptions?: string[];
+  testDate?: Date;
+  test?: TestRecord;
+  tests: TestRecord[];
+  testTypes: string[];
+  testResults: TestResult[];
+  testResult: TestResult;
+  location: LocationState;
+  dispatch: Dispatch;
 }
 
-const stringArrayToOptionType = (stringArray: string[]): OptionTypeBase[] =>
-  stringArray.map((s) => ({ label: s, value: s }));
+const mapStateToProps = (state: ReduxState) => {
+  const nyt: NytObject = state.nyt as NytObject;
+  const location = state.location;
+  const testTypeObj: any = {};
 
-const testTypeOptions: OptionTypeBase[] = stringArrayToOptionType([
-  "Antibody",
-  "PCR",
-]);
+  (state.tests || []).forEach((test) => {
+    if (!testTypeObj[test.type]) {
+      testTypeObj[test.type] = true;
+    }
+  });
 
-const testOptions: OptionTypeBase[] = stringArrayToOptionType([
-  "Abbot Architect",
-  "Roche PCR",
-]);
+  const testTypes = Object.keys(testTypeObj);
 
-export default ({ caseData }: Props) => {
-  const [countyOptions, setCountyOptions] = useState<OptionTypeBase[]>([]);
-  const [state, setState] = useState<OptionTypeBase | null>(null);
-  const [county, setCounty] = useState<OptionTypeBase | null>(null);
-  const [testDate, setTestDate] = useState<Date | null>(null);
-  const [test, setTest] = useState<OptionTypeBase | null>(null);
-  const [testType, setTestType] = useState<OptionTypeBase | null>(null);
-
-  const stateOptions: OptionTypeBase[] = caseData
-    ? stringArrayToOptionType(Object.keys(caseData).sort())
-    : [];
-
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  return {
+    stateOptions: nyt ? Object.keys(nyt).sort() : [],
+    countyOptions: location.state
+      ? Object.keys(nyt[location.state]).sort()
+      : undefined,
+    testDate: state.testDate,
+    test: state.test,
+    tests: state.tests,
+    testResults: ["Positive", "Negative", "Indeterminate"],
+    testResult: state.testResult,
+    testTypes,
+    location,
   };
+};
+
+const stringToOptionType = (string: string): OptionTypeBase => ({
+  label: string,
+  value: string,
+});
+
+const stringArrayToOptionType = (stringArray: string[]): OptionTypeBase[] =>
+  stringArray.map(stringToOptionType);
+
+const Test = ({
+  stateOptions,
+  countyOptions,
+  testDate,
+  test,
+  location,
+  dispatch,
+  testTypes,
+  testResults,
+  testResult,
+  tests,
+}: Props) => {
+  const [testType, setTestType] = useState<OptionTypeBase | undefined>();
 
   const today = new Date();
 
-  // @ts-ignore
-  window.cs = caseData;
-
-  const dataPoint: PrevalencePoint | undefined = (get(
-    caseData,
-    `${state && state.label}.${county && county.label}.${
-      testDate?.toISOString().split("T")[0]
-    }`
-  ) as unknown) as PrevalencePoint;
-
   return (
-    <div className="card min-h-10">
-      {caseData ? (
-        <form onSubmit={onSubmit} className="flex flex-col">
-          <div className="my-4">
-            <h4>1. Where are you located?</h4>
-            <div className="flex flex-row items-center">
-              <div className="w-40 mr-10 my-10">
+    <div>
+      <div className="mt-8">
+        <h4>What type of test did you take?</h4>
+        <Select
+          className="w-40 p-1 rounded-md my-2"
+          placeholder="Test name"
+          value={testType}
+          onChange={(opt: OptionTypeBase) => {
+            setTestType(opt);
+            dispatch(setTest(undefined));
+          }}
+          options={stringArrayToOptionType(testTypes)}
+        />
+      </div>
+      {testType ? (
+        <div className="mt-8">
+          <h4>Which {testType.label} test did you take?</h4>
+          <Select
+            className="w-40 p-1 rounded-md my-2"
+            placeholder="Test name"
+            value={test && { value: test, label: test.diagnostic }}
+            // @ts-ignore
+            onChange={(opt: TestOption) => {
+              dispatch(setTest(opt.value));
+            }}
+            options={tests
+              .filter((test) => test.type === testType.label)
+              .map((t) => ({ value: t, label: t.diagnostic }))}
+          />
+        </div>
+      ) : null}
+      {/* Show specificity and sensitivity information */}
+      {test ? <SpecificitySensitivityCard /> : null}
+      {test ? (
+        <div className="mt-8">
+          <h4>When were you tested?</h4>
+          <DatePicker
+            className="w-40 p-1 rounded-md my-4"
+            selected={testDate}
+            onChange={(date: Date) => {
+              dispatch(setTestDate(date));
+            }}
+            maxDate={today}
+          />
+        </div>
+      ) : null}
+
+      {testType && test && testDate ? (
+        <div className="my-4">
+          <h4>Where are you located?</h4>
+          <div className="flex flex-row items-center">
+            <div className="w-40 mr-10 my-10">
+              <Select
+                className="my-2"
+                options={stringArrayToOptionType(stateOptions)}
+                name="state"
+                value={location.state && stringToOptionType(location.state)}
+                placeholder="State"
+                isSearchable
+                onChange={(opt: OptionTypeBase) => {
+                  dispatch(setState(opt.value));
+                  dispatch(setCounty(undefined));
+                }}
+              />
+            </div>
+
+            {location.state && countyOptions ? (
+              <div className="w-40 mr-10">
                 <Select
                   className="my-2"
-                  options={stateOptions}
-                  name="state"
-                  value={state}
-                  placeholder="State"
+                  options={stringArrayToOptionType(countyOptions)}
+                  placeholder="County"
+                  name="county"
+                  value={location.county && stringToOptionType(location.county)}
                   isSearchable
                   onChange={(opt: OptionTypeBase) => {
-                    setCounty(null);
-                    setState(opt);
-                    const countyData: NytState = caseData[opt.value];
-                    const options: OptionTypeBase[] = Object.keys(countyData)
-                      .sort()
-                      .map((k) => ({
-                        label: k,
-                        value: k,
-                      }));
-                    setCountyOptions(options);
+                    dispatch(setCounty(opt.value));
                   }}
                 />
               </div>
-
-              {state ? (
-                <div className="w-40 mr-10">
-                  <Select
-                    className="my-2"
-                    options={countyOptions}
-                    placeholder="County"
-                    name="county"
-                    value={county}
-                    isSearchable
-                    onChange={(opt: OptionTypeBase) => {
-                      setCounty(opt);
-                    }}
-                  />
-                </div>
-              ) : null}
-            </div>
-          </div>
-
-          {county ? (
-            <div className="mt-8">
-              <h4>2. When were you tested?</h4>
-              <DatePicker
-                className="w-40 p-1 rounded-md my-4"
-                selected={testDate}
-                onChange={(date: Date) => {
-                  setTestDate(date);
-                }}
-                maxDate={today}
-              />
-            </div>
-          ) : null}
-
-          <div className="my-4">
-            {dataPoint && testDate && state && county ? (
-              <Prevalence
-                dataPoint={dataPoint}
-                date={testDate}
-                state={state.label}
-                county={county.label}
-              />
             ) : null}
           </div>
+        </div>
+      ) : null}
 
-          <DropdownQuestion
-            gate={testDate}
-            value={testType}
-            text="3. What type of test did you take?"
-            options={testTypeOptions}
-            set={setTestType}
+      {/* Display prevalence information */}
+      {location.state && location.county && testDate ? (
+        <PrevalenceCard />
+      ) : null}
+
+      {/* Allow user to request results */}
+      {location.state && location.county && testDate ? (
+        <div className="mt-8">
+          <h4>What was your test result?</h4>
+          <Select
+            className="w-40 p-1 rounded-md my-2"
+            placeholder="Test name"
+            value={stringToOptionType(testResult)}
+            onChange={(opt: OptionTypeBase) => {
+              dispatch(setTestResult(opt.value));
+            }}
+            options={stringArrayToOptionType(testResults)}
           />
-
-          <DropdownQuestion
-            gate={testType}
-            value={test}
-            text={`4. Which ${
-              testType ? `${testType.label} ` : ""
-            }test did you take?`}
-            set={setTest}
-            options={testOptions}
-          />
-
-          {test ? (
-            <input
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white my-4 rounded-md cursor-pointer max-w-sm"
-              type="submit"
-              value="See Results"
-            />
-          ) : null}
-        </form>
-      ) : (
-        <Loader />
-      )}
-      <Diagram />
+        </div>
+      ) : null}
+      {/* Show full results */}
+      {testResult ? <ResultsCard /> : null}
     </div>
   );
 };
+
+export default connect(mapStateToProps)(Test as ComponentType);

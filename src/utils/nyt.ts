@@ -1,15 +1,12 @@
 import set from "lodash.set";
 
-export const url =
-  "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv";
-
-export interface PrevalencePoint {
+export interface NytPoint {
   cases: number;
   deaths: number;
 }
 
 export interface NytCounty {
-  [date: string]: PrevalencePoint;
+  [date: string]: NytPoint;
 }
 
 export interface NytState {
@@ -34,7 +31,7 @@ const toPoint = ({
 }: {
   cases: string;
   deaths: string;
-}): PrevalencePoint => ({
+}): NytPoint => ({
   cases: parseInt(cases),
   deaths: parseInt(deaths),
 });
@@ -43,7 +40,13 @@ export const arrayToStateObject = (array: CSVRow[]) => {
   const stateObject: NytObject = {};
 
   array.forEach(({ county, state, cases, deaths, date }) => {
-    set(stateObject, `${state}.${county}.${date}`, toPoint({ cases, deaths }));
+    if (county !== "Unknown") {
+      set(
+        stateObject,
+        `${state}.${county}.${date}`,
+        toPoint({ cases, deaths })
+      );
+    }
   });
 
   return stateObject;
