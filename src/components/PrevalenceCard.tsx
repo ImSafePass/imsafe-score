@@ -80,7 +80,7 @@ const PrevalenceCard = ({ location, prevalence, test }: Props) => {
         {location.state} when you were most likely to be infected. For a{" "}
         {fullTestType(test.type)} test, like the one you took, that number is
         the {testDateExplainer} We calculate this using the estimated average
-        length of infection (${activeInfectionLengthDays} days).
+        length of infection ({activeInfectionLengthDays} days).
       </p>
       <p>
         We attempt to correct for state variance in measurement, and apply a

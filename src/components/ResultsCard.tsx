@@ -43,11 +43,7 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
         : (specificity * (1 - percent)) /
           (specificity * (1 - percent) + (1 - sensitivity) * percent);
     console.log({ specificity, sensitivity, prevalence, result });
-    /**
- =( Sensitivity * Bayesian Prior )/(( Sensitivity * Bayesian Prior )+(( 1 - Specificity )*( 1 - Bayesian Prior))
 
- =( Specificity * (1 - Bayesian Prior ))/(( Specificity * ( 1- Bayesian Prior ))+(( 1 - Sensitivity ) * Bayesian Prior))
-     */
     content = (
       <>
         <p>
