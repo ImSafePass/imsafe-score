@@ -40,7 +40,8 @@ const SensitivitySpecificityCard = ({ test }: Props) => {
 
   return (
     <div className="card">
-      <p className="mb-4">
+      <h4 className="mb-4">Sensitivity and Specificity</h4>
+      <p>
         A diagnostic's accuracy is a function of its{" "}
         <Link href="https://www.wikiwand.com/en/Sensitivity_and_specificity">
           "sensitivity" and "specificity"
@@ -48,18 +49,18 @@ const SensitivitySpecificityCard = ({ test }: Props) => {
         -- essentially its ability to detect illness and to distinguish that
         illness from others, respectively.
       </p>
-      <p className="mb-4">
+      <p>
         We have pulled sensitivity and specificity data from public sources,
         preferencing independent over manufacturer measures.
       </p>
-      <p className="mb-4">
+      <p>
         This knowledge is imperfect, and where given, we've displayed the{" "}
         <Link href="https://www.wikiwand.com/en/Confidence_interval">
           "confidence interval"
         </Link>{" "}
         for the measured sensitivity and specificity of each test.
       </p>
-      <p className="mb-4">
+      <p>
         The{" "}
         <strong>
           {manufacturer} {diagnostic} {typeDetail}
@@ -72,7 +73,7 @@ const SensitivitySpecificityCard = ({ test }: Props) => {
         .
       </p>
       {euaApproved ? (
-        <p className="mb-4">
+        <p>
           This diagnostic has been approved by the FDA under{" "}
           <Link href="https://www.wikiwand.com/en/Emergency_Use_Authorization">
             Emergency Use Authorization
@@ -88,7 +89,7 @@ const SensitivitySpecificityCard = ({ test }: Props) => {
         </p>
       ) : null}
       {documentLink ? (
-        <p className="mb-4">
+        <p>
           View the document describing this diagnostic's sensitivity and
           specificity <Link href={documentLink}>here</Link>.
         </p>

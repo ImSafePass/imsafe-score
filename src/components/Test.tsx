@@ -93,11 +93,11 @@ const Test = ({
   const today = new Date();
 
   return (
-    <div>
-      <div className="mt-8">
-        <h4>What type of test did you take?</h4>
+    <div className="mx-auto max-w-4xl my-10">
+      <div className="question">
+        <h3>What type of test did you take?</h3>
         <Select
-          className="w-40 p-1 rounded-md my-2"
+          className="select"
           placeholder="Test name"
           value={qs.type && stringToOptionType(qs.type as string)}
           onChange={(opt: OptionTypeBase) => {
@@ -108,10 +108,10 @@ const Test = ({
         />
       </div>
       {qs.type ? (
-        <div className="mt-8">
-          <h4>Which {(qs.type as string).toLowerCase()} test did you take?</h4>
+        <div className="question">
+          <h3>Which {(qs.type as string).toLowerCase()} test did you take?</h3>
           <Select
-            className="w-40 p-1 rounded-md my-2"
+            className="select"
             placeholder="Test name"
             value={test && { value: test, label: test.diagnostic }}
             // @ts-ignore
@@ -128,8 +128,8 @@ const Test = ({
       {/* Show specificity and sensitivity information */}
       {test ? <SpecificitySensitivityCard /> : null}
       {test ? (
-        <div className="mt-8">
-          <h4>When were you tested?</h4>
+        <div className="question">
+          <h3>When were you tested?</h3>
           <DatePicker
             className="w-40 p-1 rounded-md my-4"
             selected={testDate}
@@ -143,14 +143,13 @@ const Test = ({
       ) : null}
 
       {qs.type && test && testDate ? (
-        <div className="my-4">
-          <h4>Where are you located?</h4>
-          <div className="flex flex-row items-center">
-            <div className="w-40 mr-10 my-10">
+        <div className="question">
+          <h3>Where are you located?</h3>
+          <div className="flex flex-col items-center md:flex-row">
+            <div className="md:mr-10 flex flex-1 w-full">
               <Select
-                className="my-2"
+                className="select"
                 options={stringArrayToOptionType(stateOptions)}
-                name="state"
                 value={location.state && stringToOptionType(location.state)}
                 placeholder="State"
                 isSearchable
@@ -163,12 +162,11 @@ const Test = ({
             </div>
 
             {location.state && countyOptions ? (
-              <div className="w-40 mr-10">
+              <div className="flex flex-1 w-full">
                 <Select
-                  className="my-2"
+                  className="select"
                   options={stringArrayToOptionType(countyOptions)}
                   placeholder="County"
-                  name="county"
                   value={location.county && stringToOptionType(location.county)}
                   isSearchable
                   onChange={(opt: OptionTypeBase) => {
@@ -189,10 +187,10 @@ const Test = ({
 
       {/* Allow user to request results */}
       {location.state && location.county && testDate ? (
-        <div className="mt-8">
-          <h4>What was your test result?</h4>
+        <div className="question">
+          <h3>What was your test result?</h3>
           <Select
-            className="w-40 p-1 rounded-md my-2"
+            className="select"
             placeholder="Test name"
             value={stringToOptionType(testResult)}
             onChange={(opt: OptionTypeBase) => {

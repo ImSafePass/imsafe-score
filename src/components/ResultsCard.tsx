@@ -87,7 +87,12 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
     );
   }
 
-  return <div className="card">{content}</div>;
+  return (
+    <div className="card">
+      <h4 className="mb-4">Result Accuracy</h4>
+      {content}
+    </div>
+  );
 };
 
 export default connect(mapStateToProps)(ResultsCard);

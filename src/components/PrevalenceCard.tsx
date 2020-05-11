@@ -45,6 +45,7 @@ const PrevalenceCard = ({ location, prevalence, test }: Props) => {
 
   return (
     <div className="card">
+      <h4 className="mb-4">Local Covid Prevalence</h4>
       <p>
         <Link href="https://www.mathsisfun.com/data/bayes-theorem.html">
           Bayes Theorem

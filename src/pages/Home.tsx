@@ -144,10 +144,10 @@ const Home = ({
   ]);
 
   return (
-    <div className="my-10">
-      <div className="container mx-auto my10">
-        <div className="flex flex-col items-center">
-          {tests && nyt ? <Test /> : <Loader />}
+    <div className="h-full">
+      <div className="container mx-auto h-full">
+        <div className="flex flex-col items-center h-full">
+          {nyt && tests ? <Test /> : <Loader />}
         </div>
       </div>
     </div>
