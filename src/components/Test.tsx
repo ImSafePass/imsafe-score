@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import React, { ComponentType, useState, useEffect } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import Select, { OptionTypeBase } from "react-select";
@@ -16,6 +16,7 @@ import { LocationState } from "../redux/reducer";
 import PrevalenceCard from "./PrevalenceCard";
 import SpecificitySensitivityCard from "./SpecificitySensitivityCard";
 import ResultsCard from "./ResultsCard";
+import Question from "./Question";
 
 import {
   setTestDate,
@@ -25,7 +26,8 @@ import {
   setTestResult,
 } from "../redux/actions";
 import { updateSearch } from "../utils/url";
-import { brief } from "../utils/date";
+import { brief, spelled } from "../utils/date";
+import get from "lodash.get";
 
 interface Props {
   stateOptions: string[];
@@ -89,13 +91,38 @@ const Test = ({
   tests,
 }: Props) => {
   const qs = queryString.parse(window.location.search);
+  const [opened, setOpened] = useState<{ [key: string]: boolean }>({
+    testType: !(qs.type as string),
+    test: !test,
+    testDate: !testDate,
+    location: !(location.state && location.county),
+    testResult: !testResult,
+  });
+  const toggleOpen = (questionName: string) => {
+    setOpened({ ...opened, [questionName]: !opened[questionName] });
+  };
+  const toggle = (questionName: string) => () => toggleOpen(questionName);
 
   const today = new Date();
 
+  useEffect(() => {
+    setOpened({
+      test: !test,
+      testDate: !testDate,
+      location: !(location.state && location.county),
+      testResult: !testResult,
+    });
+  }, [test, testDate, testResult, location]);
+
   return (
     <div className="mx-auto max-w-4xl my-10">
-      <div className="question">
-        <h3>What type of test did you take?</h3>
+      <Question
+        question="What type of test did you take?"
+        answer={`You took a *${qs.type as string}* test.`}
+        onAnswerClick={toggle("testType")}
+        answered={!opened.testType}
+        visible
+      >
         <Select
           className="select"
           placeholder="Test name"
@@ -103,82 +130,94 @@ const Test = ({
           onChange={(opt: OptionTypeBase) => {
             updateSearch({ type: opt.value, test: null });
             dispatch(setTest(undefined));
+            toggleOpen("testType");
           }}
           options={stringArrayToOptionType(testTypes)}
         />
-      </div>
-      {qs.type ? (
-        <div className="question">
-          <h3>Which {(qs.type as string).toLowerCase()} test did you take?</h3>
-          <Select
-            className="select"
-            placeholder="Test name"
-            value={test && { value: test, label: test.diagnostic }}
-            // @ts-ignore
-            onChange={(opt: TestOption) => {
-              updateSearch({ test: opt.value.id });
-              dispatch(setTest(opt.value));
-            }}
-            options={tests
-              .filter((test) => test.type === qs.type)
-              .map((t) => ({ value: t, label: t.diagnostic }))}
-          />
-        </div>
-      ) : null}
-      {/* Show specificity and sensitivity information */}
-      {test ? <SpecificitySensitivityCard /> : null}
-      {test ? (
-        <div className="question">
-          <h3>When were you tested?</h3>
-          <DatePicker
-            className="w-40 p-1 rounded-md my-4"
-            selected={testDate}
-            onChange={(date: Date) => {
-              updateSearch({ date: brief(date) });
-              dispatch(setTestDate(date));
-            }}
-            maxDate={today}
-          />
-        </div>
-      ) : null}
+      </Question>
+      <Question
+        visible={!!qs.type}
+        question={`Which ${(qs.type as string).toLowerCase()} test did you take?`}
+        answer={`You took *${get(test, "diagnostic")}*.`}
+        onAnswerClick={toggle("test")}
+        answered={!opened.test}
+      >
+        <Select
+          className="select"
+          placeholder="Test name"
+          value={test && { value: test, label: test.diagnostic }}
+          // @ts-ignore
+          onChange={(opt: TestOption) => {
+            updateSearch({ test: opt.value.id });
+            dispatch(setTest(opt.value));
+          }}
+          options={tests
+            .filter((test) => test.type === qs.type)
+            .map((t) => ({ value: t, label: t.diagnostic }))}
+        />
+      </Question>
 
-      {qs.type && test && testDate ? (
-        <div className="question">
-          <h3>Where are you located?</h3>
-          <div className="flex flex-col items-center md:flex-row">
-            <div className="md:mr-10 flex flex-1 w-full">
+      {/* Show specificity and sensitivity information */}
+      {/* {test ? <SpecificitySensitivityCard /> : null} */}
+
+      <Question
+        visible={!!test}
+        question="When were you tested?"
+        answer={`You were tested on *${testDate && spelled(testDate)}*.`}
+        onAnswerClick={toggle("testDate")}
+        answered={!opened.testDate}
+      >
+        <DatePicker
+          className="w-40 p-1 rounded-md my-4"
+          selected={testDate}
+          onChange={(date: Date) => {
+            updateSearch({ date: brief(date) });
+            dispatch(setTestDate(date));
+          }}
+          maxDate={today}
+        />
+      </Question>
+
+      <Question
+        visible={!!(qs.type && test && testDate)}
+        question="Where are you located?"
+        answer={`You're in *${location.county}, ${location.state}*.`}
+        onAnswerClick={toggle("location")}
+        answered={!opened.location}
+      >
+        <div className="flex flex-col items-center md:flex-row">
+          <div className="md:mr-10 flex flex-1 w-full">
+            <Select
+              className="select"
+              options={stringArrayToOptionType(stateOptions)}
+              value={location.state && stringToOptionType(location.state)}
+              placeholder="State"
+              isSearchable
+              onChange={(opt: OptionTypeBase) => {
+                updateSearch({ state: opt.value, county: null });
+                dispatch(setState(opt.value));
+                dispatch(setCounty(undefined));
+              }}
+            />
+          </div>
+
+          {location.state && countyOptions ? (
+            <div className="flex flex-1 w-full">
               <Select
                 className="select"
-                options={stringArrayToOptionType(stateOptions)}
-                value={location.state && stringToOptionType(location.state)}
-                placeholder="State"
+                options={stringArrayToOptionType(countyOptions)}
+                placeholder="County"
+                value={location.county && stringToOptionType(location.county)}
                 isSearchable
                 onChange={(opt: OptionTypeBase) => {
-                  updateSearch({ state: opt.value, county: null });
-                  dispatch(setState(opt.value));
-                  dispatch(setCounty(undefined));
+                  updateSearch({ county: opt.value });
+                  dispatch(setCounty(opt.value));
                 }}
               />
             </div>
-
-            {location.state && countyOptions ? (
-              <div className="flex flex-1 w-full">
-                <Select
-                  className="select"
-                  options={stringArrayToOptionType(countyOptions)}
-                  placeholder="County"
-                  value={location.county && stringToOptionType(location.county)}
-                  isSearchable
-                  onChange={(opt: OptionTypeBase) => {
-                    updateSearch({ county: opt.value });
-                    dispatch(setCounty(opt.value));
-                  }}
-                />
-              </div>
-            ) : null}
-          </div>
+          ) : null}
         </div>
-      ) : null}
+      </Question>
 
       {/* Display prevalence information */}
       {location.state && location.county && testDate ? (
@@ -186,21 +225,24 @@ const Test = ({
       ) : null}
 
       {/* Allow user to request results */}
-      {location.state && location.county && testDate ? (
-        <div className="question">
-          <h3>What was your test result?</h3>
-          <Select
-            className="select"
-            placeholder="Test name"
-            value={stringToOptionType(testResult)}
-            onChange={(opt: OptionTypeBase) => {
-              updateSearch({ result: opt.value });
-              dispatch(setTestResult(opt.value));
-            }}
-            options={stringArrayToOptionType(testResults)}
-          />
-        </div>
-      ) : null}
+      <Question
+        visible={!!(location.state && location.county && testDate)}
+        question="What was your test result?"
+        answer={`You tested *${testResult}*.`}
+        onAnswerClick={toggle("testResult")}
+        answered={!opened.testResult}
+      >
+        <Select
+          className="select"
+          placeholder="Test name"
+          value={stringToOptionType(testResult)}
+          onChange={(opt: OptionTypeBase) => {
+            updateSearch({ result: opt.value });
+            dispatch(setTestResult(opt.value));
+          }}
+          options={stringArrayToOptionType(testResults)}
+        />
+      </Question>
       {/* Show full results */}
       {testResult ? <ResultsCard /> : null}
     </div>
