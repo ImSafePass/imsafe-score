@@ -11,6 +11,7 @@ import {
 
 import Link from "./Link";
 import Loader from "./Loader";
+import ResultsChart from "./ResultsChart";
 
 interface Props {
   prevalence?: Prevalence;
@@ -91,6 +92,7 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
     <div className="card">
       <h4 className="mb-4">Result Accuracy</h4>
       {content}
+      <ResultsChart />
     </div>
   );
 };
