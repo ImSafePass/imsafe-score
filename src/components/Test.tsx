@@ -118,7 +118,9 @@ const Test = ({
     <div className="mx-auto max-w-4xl my-10">
       <Question
         question="What type of test did you take?"
-        answer={`You took a *${qs.type as string}* test.`}
+        answer={`You took a *${(
+          (qs.type as string) || ""
+        ).toLowerCase()}* test.`}
         onAnswerClick={toggle("testType")}
         answered={!opened.testType}
         visible
@@ -137,7 +139,9 @@ const Test = ({
       </Question>
       <Question
         visible={!!qs.type}
-        question={`Which ${(qs.type as string).toLowerCase()} test did you take?`}
+        question={`Which ${(
+          (qs.type as string) || ""
+        ).toLowerCase()} test did you take?`}
         answer={`You took *${get(test, "diagnostic")}*.`}
         onAnswerClick={toggle("test")}
         answered={!opened.test}
