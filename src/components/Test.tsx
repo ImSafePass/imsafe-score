@@ -91,28 +91,29 @@ const Test = ({
   tests,
 }: Props) => {
   const qs = queryString.parse(window.location.search);
-  const [opened, setOpened] = useState<{ [key: string]: boolean }>({
-    testType: !(qs.type as string),
+
+  const [open, setOpen] = useState<{ [key: string]: boolean }>({
+    testType: !qs.type,
     test: !test,
     testDate: !testDate,
     location: !(location.state && location.county),
     testResult: !testResult,
   });
   const toggleOpen = (questionName: string) => {
-    setOpened({ ...opened, [questionName]: !opened[questionName] });
+    setOpen({ ...open, [questionName]: !open[questionName] });
   };
   const toggle = (questionName: string) => () => toggleOpen(questionName);
 
   const today = new Date();
 
   useEffect(() => {
-    setOpened({
+    setOpen({
       test: !test,
       testDate: !testDate,
       location: !(location.state && location.county),
       testResult: !testResult,
     });
-  }, [test, testDate, testResult, location]);
+  }, [test, testDate, testResult, location, qs.testType]);
 
   return (
     <div className="mx-auto max-w-4xl my-10">
@@ -122,7 +123,7 @@ const Test = ({
           (qs.type as string) || ""
         ).toLowerCase()}* test.`}
         onAnswerClick={toggle("testType")}
-        answered={!opened.testType}
+        open={open.testType}
         visible
       >
         <Select
@@ -144,7 +145,7 @@ const Test = ({
         ).toLowerCase()} test did you take?`}
         answer={`You took *${get(test, "diagnostic")}*.`}
         onAnswerClick={toggle("test")}
-        answered={!opened.test}
+        open={open.test}
       >
         <Select
           className="select"
@@ -169,7 +170,7 @@ const Test = ({
         question="When were you tested?"
         answer={`You were tested on *${testDate && spelled(testDate)}*.`}
         onAnswerClick={toggle("testDate")}
-        answered={!opened.testDate}
+        open={open.testDate}
       >
         <DatePicker
           className="w-40 p-1 rounded-md my-4"
@@ -187,7 +188,7 @@ const Test = ({
         question="Where are you located?"
         answer={`You're in *${location.county}, ${location.state}*.`}
         onAnswerClick={toggle("location")}
-        answered={!opened.location}
+        open={open.location}
       >
         <div className="flex flex-col items-center md:flex-row">
           <div className="md:mr-10 flex flex-1 w-full">
@@ -234,7 +235,7 @@ const Test = ({
         question="What was your test result?"
         answer={`You tested *${testResult}*.`}
         onAnswerClick={toggle("testResult")}
-        answered={!opened.testResult}
+        open={open.testResult}
       >
         <Select
           className="select"

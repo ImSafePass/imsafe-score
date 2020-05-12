@@ -2,7 +2,7 @@ import React, { ReactChildren, ReactChild } from "react";
 import Markdown from "react-markdown";
 
 interface Props {
-  answered: boolean;
+  open: boolean;
   question: string;
   answer: string;
   onAnswerClick: () => void;
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Question = ({
-  answered,
+  open,
   question,
   answer,
   onAnswerClick,
@@ -24,18 +24,18 @@ const Question = ({
 
   return (
     <div className="question">
-      {answered ? (
+      {open ? (
+        <>
+          <h3>{question}</h3>
+          {children}
+        </>
+      ) : (
         <h3 className="underline cursor-pointer" onClick={onAnswerClick}>
           <Markdown
             source={answer}
             renderers={{ paragraph: (props) => <>{props.children}</> }}
           />
         </h3>
-      ) : (
-        <>
-          <h3>{question}</h3>
-          {children}
-        </>
       )}
     </div>
   );
