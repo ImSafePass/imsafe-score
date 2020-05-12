@@ -53,7 +53,11 @@ const rootReducer = (
 ): ReduxState => {
   switch (action.type) {
     case "SET_TEST": {
-      return { ...state, test: action.test };
+      if (action.test) {
+        return { ...state, test: action.test };
+      } else {
+        return { ...state, testResult: undefined, test: undefined };
+      }
     }
 
     case "SET_TESTS": {
