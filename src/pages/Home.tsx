@@ -102,7 +102,9 @@ const Home = ({
         dispatch(setCounty(qs.county as string));
       }
 
-      updateSearch(changes);
+      if (Object.keys(changes).length) {
+        updateSearch(changes);
+      }
     };
 
     if (!tests) {
