@@ -227,13 +227,13 @@ const Test = ({
       </Question>
 
       {/* Display prevalence information */}
-      {location.state && location.county && testDate ? (
+      {location.state && location.county && testDate && test ? (
         <PrevalenceCard />
       ) : null}
 
       {/* Allow user to request results */}
       <Question
-        visible={!!(location.state && location.county && testDate)}
+        visible={!!(location.state && location.county && testDate && test)}
         question="What was your test result?"
         answer={`You tested *${testResult}*.`}
         onAnswerClick={toggle("testResult")}
@@ -251,7 +251,9 @@ const Test = ({
         />
       </Question>
       {/* Show full results */}
-      {testResult ? <ResultsCard /> : null}
+      {testResult && test && location.state && location.county ? (
+        <ResultsCard />
+      ) : null}
     </div>
   );
 };
