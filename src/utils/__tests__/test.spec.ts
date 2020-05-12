@@ -1,5 +1,5 @@
 import { parseTestRecord as parse, getTestRecords, TestRecord } from "../test";
-import allParsed, {
+import allApiRecords, {
   manufacturerScoring,
   noLowHigh,
   independentScoring,
@@ -76,7 +76,12 @@ describe("parseTestRecord", () => {
 
 describe("getTestRecords", () => {
   it("excludes null records", () => {
-    expect(allParsed.length).toBe(7);
-    expect(getTestRecords(allParsed).length).toBe(3);
+    expect(allApiRecords.length).toBe(7);
+    const parsed = getTestRecords(allApiRecords);
+    expect(parsed.length).toBe(3);
+
+    expect(
+      parsed.every((p) => (p as TestRecord).manufacturer !== undefined)
+    ).toBe(true);
   });
 });
