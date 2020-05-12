@@ -109,13 +109,13 @@ const Test = ({
 
   useEffect(() => {
     setOpen({
-      testType: !qs.testType,
+      testType: !qs.type,
       test: !test,
       testDate: !testDate,
       location: !(location.state && location.county),
       testResult: !testResult,
     });
-  }, [test, testDate, testResult, location, qs.testType]);
+  }, [test, testDate, testResult, location, qs.type]);
 
   return (
     <div className="mx-auto max-w-4xl my-10">
