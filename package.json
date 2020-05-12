@@ -45,7 +45,7 @@
     "cs": "yarn css && yarn start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "t": "yarn test",
+    "t": "yarn test --testPathIgnorePatterns=src/[A-za-z-]+/__tests__/examples.ts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
