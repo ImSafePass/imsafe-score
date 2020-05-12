@@ -91,7 +91,6 @@ const Test = ({
   tests,
 }: Props) => {
   const qs = queryString.parse(window.location.search);
-
   const [open, setOpen] = useState<{ [key: string]: boolean }>({
     testType: !qs.type,
     test: !test,
@@ -99,6 +98,7 @@ const Test = ({
     location: !(location.state && location.county),
     testResult: !testResult,
   });
+
   const toggleOpen = (questionName: string) => {
     setOpen({ ...open, [questionName]: !open[questionName] });
   };
@@ -108,12 +108,13 @@ const Test = ({
 
   useEffect(() => {
     setOpen({
+      testType: open.testType,
       test: !test,
       testDate: !testDate,
       location: !(location.state && location.county),
       testResult: !testResult,
     });
-  }, [test, testDate, testResult, location, qs.testType]);
+  }, [test, testDate, testResult, location, open]);
 
   return (
     <div className="mx-auto max-w-4xl my-10">
