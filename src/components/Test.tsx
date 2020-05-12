@@ -102,19 +102,20 @@ const Test = ({
   const toggleOpen = (questionName: string) => {
     setOpen({ ...open, [questionName]: !open[questionName] });
   };
+
   const toggle = (questionName: string) => () => toggleOpen(questionName);
 
   const today = new Date();
 
   useEffect(() => {
     setOpen({
-      testType: open.testType,
+      testType: !qs.testType,
       test: !test,
       testDate: !testDate,
       location: !(location.state && location.county),
       testResult: !testResult,
     });
-  }, [test, testDate, testResult, location, open]);
+  }, [test, testDate, testResult, location, qs.testType]);
 
   return (
     <div className="mx-auto max-w-4xl my-10">
