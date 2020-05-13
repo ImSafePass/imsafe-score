@@ -47,84 +47,84 @@ export const fullTestType = (testType: TestType) =>
 /**
  * Relevant case number is determined by test type.
  */
-const getRelevantCaseObject = (
-  testDate: Date,
-  testType: TestType,
-  countyData: NytCounty
-):
-  | {
-      molecularDates: {
-        cutoff: PrevalenceDatePoint;
-        test: PrevalenceDatePoint;
-      };
-    }
-  | { serologicalDate: PrevalenceDatePoint } => {
-  // For active infection tests, grab "active" cases at time of testing
-  if (testType === "Molecular") {
-    const cutoffDate = daysFrom(-activeInfectionLengthDays, testDate);
+// const getRelevantCaseObject = (
+//   testDate: Date,
+//   testType: TestType,
+//   countyData: NytCounty
+// ):
+//   | {
+//       molecularDates: {
+//         cutoff: PrevalenceDatePoint;
+//         test: PrevalenceDatePoint;
+//       };
+//     }
+//   | { serologicalDate: PrevalenceDatePoint } => {
+//   // For active infection tests, grab "active" cases at time of testing
+//   if (testType === "Molecular") {
+//     const cutoffDate = daysFrom(-activeInfectionLengthDays, testDate);
 
-    const testPoint = countyData[brief(testDate)] || { cases: 0 };
-    const cutoffPoint = countyData[brief(cutoffDate)] || { cases: 0 };
-    const cases = testPoint.cases - cutoffPoint.cases;
-    const caseNumberDescription = (
-      <>
-        <p>
-          For molecular (active infection) tests, we use estimated active cases
-          on your infection date -- calculated as cases on your test date (
-          {testPoint.cases} on {spelled(testDate)}) minus the number of those
-          cases estimated to no longer be infectious (because they have passed
-          the average {activeInfectionLengthDays} days of active infection).
-        </p>
-        <p>
-          That totals an estimated {cases} measured cases that were active at
-          the time you were tested.
-        </p>
-      </>
-    );
+//     const testPoint = countyData[brief(testDate)] || { cases: 0 };
+//     const cutoffPoint = countyData[brief(cutoffDate)] || { cases: 0 };
+//     const cases = testPoint.cases - cutoffPoint.cases;
+//     const caseNumberDescription = (
+//       <>
+//         <p>
+//           For molecular (active infection) tests, we use estimated active cases
+//           on your infection date -- calculated as cases on your test date (
+//           {testPoint.cases} on {spelled(testDate)}) minus the number of those
+//           cases estimated to no longer be infectious (because they have passed
+//           the average {activeInfectionLengthDays} days of active infection).
+//         </p>
+//         <p>
+//           That totals an estimated {cases} measured cases that were active at
+//           the time you were tested.
+//         </p>
+//       </>
+//     );
 
-    return {
-      molecularDates: {
-        cutoff: {
-          date: cutoffDate,
-          cases: cutoffPoint.cases,
-        },
-        test: {
-          date: testDate,
-          cases: testPoint.cases,
-        },
-      },
-    };
+//     return {
+//       molecularDates: {
+//         cutoff: {
+//           date: cutoffDate,
+//           cases: cutoffPoint.cases,
+//         },
+//         test: {
+//           date: testDate,
+//           cases: testPoint.cases,
+//         },
+//       },
+//     };
 
-    // For serological tests, grab ALL cases prior to beginning of infection
-  } else {
-    const relevantDate = daysFrom(-antibodyDelayDays, testDate);
-    const relevantPoint = countyData[brief(relevantDate)] || { cases: 0 };
-    const cases = relevantPoint.cases;
-    const caseNumberDescription = (
-      <>
-        <p>
-          For serological (antibody) tests, we calculate your "prior
-          probability" of being immune based on the total known number of cases
-          up to the date when you would have been infected (your test date minus
-          the {antibodyDelayDays} average days it takes to build antibodies).
-        </p>
-        <p>
-          That number is {cases} cases in your county on {spelled(relevantDate)}
-          , {antibodyDelayDays} before you were tested.
-        </p>
-      </>
-    );
-    return {
-      serologicalDate: {
-        date: relevantDate,
-        cases,
-      },
-    };
-    // return { cases, caseNumberDescription };
-  }
-};
+//     // For serological tests, grab ALL cases prior to beginning of infection
+//   } else {
+//     const relevantDate = daysFrom(-antibodyDelayDays, testDate);
+//     const relevantPoint = countyData[brief(relevantDate)] || { cases: 0 };
+//     const cases = relevantPoint.cases;
+//     const caseNumberDescription = (
+//       <>
+//         <p>
+//           For serological (antibody) tests, we calculate your "prior
+//           probability" of being immune based on the total known number of cases
+//           up to the date when you would have been infected (your test date minus
+//           the {antibodyDelayDays} average days it takes to build antibodies).
+//         </p>
+//         <p>
+//           That number is {cases} cases in your county on {spelled(relevantDate)}
+//           , {antibodyDelayDays} before you were tested.
+//         </p>
+//       </>
+//     );
+//     return {
+//       serologicalDate: {
+//         date: relevantDate,
+//         cases,
+//       },
+//     };
+//     // return { cases, caseNumberDescription };
+//   }
+// };
 
-const getRelevantDates = (testType: TestType, testDate: Date) => {
+export const getRelevantDates = (testType: TestType, testDate: Date) => {
   if (testType === "Molecular") {
     const cutoffDate = daysFrom(-activeInfectionLengthDays, testDate);
     return [cutoffDate, testDate];

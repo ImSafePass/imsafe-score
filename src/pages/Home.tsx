@@ -75,7 +75,7 @@ const URLDispatcher = ({
   const dispatch = useDispatch();
   const qs = queryString.parse(window.location.search);
   useEffect(() => {
-    if (!tests.length) {
+    if (!tests || !tests.length) {
       return;
     }
 

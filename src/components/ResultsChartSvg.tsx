@@ -1,14 +1,12 @@
 import React, { useRef } from "react";
 
 import ResultsChartBar from "./ResultsChartBar";
+import { TriplePoint } from "../utils/bayes";
+
 interface Props {
   bars: {
     label: string;
-    data: {
-      low: number;
-      mid: number;
-      high: number;
-    };
+    data: TriplePoint;
   }[];
 }
 

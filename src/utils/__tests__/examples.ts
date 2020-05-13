@@ -1,9 +1,28 @@
-import { ApiTestRecord } from "../test";
+import {
+  ApiTestRecord,
+  parseTestRecord,
+  TestResult,
+  TestRecord,
+} from "../test";
+import { NytObject } from "../nyt";
+import {
+  ReduxState,
+  LocationState,
+  StateCorrections,
+  PrevalenceMultiples,
+} from "../../redux/reducer";
+import { daysFrom, brief } from "../date";
+import {
+  activeInfectionLengthDays,
+  antibodyDelayDays,
+  getPrevalenceFromState,
+} from "../prevalence";
 
 interface ApiTestRecordForSpec extends ApiTestRecord {
   specDescription: string;
 }
 
+// TEST RECORDS
 export const insufficientScoring: ApiTestRecordForSpec = {
   id: "rec065zekjPAkDKjz",
   specDescription: "Bad: Insufficient Scoring",
@@ -134,7 +153,7 @@ export const noDiagnostic = {
   createdTime: "2020-05-07T19:45:59.000Z",
 };
 
-const testExamples: ApiTestRecordForSpec[] = [
+export const testExamples: ApiTestRecordForSpec[] = [
   insufficientScoring,
   manufacturerScoring,
   noLowHigh,
@@ -144,4 +163,64 @@ const testExamples: ApiTestRecordForSpec[] = [
   noDiagnostic,
 ];
 
-export default testExamples;
+// OTHER DATA
+
+const serologyRelevantCaseObj = {
+  cases: 1700,
+  deaths: 25,
+};
+
+const testDateCaseObj = {
+  cases: 1980,
+  deaths: 35,
+};
+
+const molecularCutoffCaseObj = {
+  cases: 1600,
+  deaths: 20,
+};
+
+const location: LocationState = {
+  state: "California",
+  county: "San Francisco",
+  countyPopulation: 800000,
+};
+
+const stateCorrections: StateCorrections = {
+  California: 1.02,
+};
+
+const prevalenceMultiples: PrevalenceMultiples = {
+  low: { value: 10 },
+  mid: { value: 15 },
+  high: { value: 20 },
+};
+
+export const testDate = new Date("2020-05-12");
+export const serologyRelevanceDate = daysFrom(-antibodyDelayDays, testDate);
+export const molecularCutoffDate = daysFrom(
+  -activeInfectionLengthDays,
+  testDate
+);
+
+const nyt: NytObject = {
+  California: {
+    "San Francisco": {
+      [brief(molecularCutoffDate)]: molecularCutoffCaseObj,
+      [brief(serologyRelevanceDate)]: serologyRelevantCaseObj,
+      [brief(testDate)]: testDateCaseObj,
+    },
+  },
+};
+
+export const baseState: ReduxState = {
+  nyt,
+  location,
+  stateCorrections,
+  prevalenceMultiples,
+  testDate,
+  test: parseTestRecord(manufacturerScoring) as TestRecord,
+};
+
+export const prevalence = (state: ReduxState = baseState) =>
+  getPrevalenceFromState(state);

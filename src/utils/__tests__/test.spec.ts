@@ -1,5 +1,6 @@
 import { parseTestRecord as parse, getTestRecords, TestRecord } from "../test";
-import allApiRecords, {
+import {
+  testExamples,
   manufacturerScoring,
   noLowHigh,
   independentScoring,
@@ -11,7 +12,7 @@ import allApiRecords, {
 
 describe("parseTestRecord", () => {
   it("parses specificity/sensitivity with confidence intervals", () => {
-    const parsed = parse(manufacturerScoring);
+    const parsed = parse(manufacturerScoring) as TestRecord;
     const {
       specificity,
       sensitivity,
@@ -52,7 +53,7 @@ describe("parseTestRecord", () => {
 
   it("handles lack of ranges", () => {
     const parsed = parse(noLowHigh);
-    const { specificity, sensitivity } = parsed;
+    const { specificity, sensitivity } = parsed as TestRecord;
     expect(specificity).toEqual({
       mid: 99.81,
     });
@@ -63,7 +64,7 @@ describe("parseTestRecord", () => {
 
   it("preferences independent over manufacturer data", () => {
     const parsed = parse(independentScoring);
-    const { chosenTestEntity, specificity, sensitivity } = parsed;
+    const { chosenTestEntity, specificity, sensitivity } = parsed as TestRecord;
     expect(chosenTestEntity).toBe("independent");
     expect(specificity.low).toBe(99.9);
     expect(specificity.high).toBe(100);
@@ -76,8 +77,8 @@ describe("parseTestRecord", () => {
 
 describe("getTestRecords", () => {
   it("excludes null records", () => {
-    expect(allApiRecords.length).toBe(7);
-    const parsed = getTestRecords(allApiRecords);
+    expect(testExamples.length).toBe(7);
+    const parsed = getTestRecords(testExamples);
     expect(parsed.length).toBe(3);
 
     expect(

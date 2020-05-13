@@ -20,7 +20,7 @@ export interface StateCorrections {
 
 export interface PrevalenceMultiple {
   value: number;
-  source: string;
+  source?: string;
 }
 
 export type LowMidHigh = "low" | "mid" | "high";

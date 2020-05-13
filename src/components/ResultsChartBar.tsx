@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-interface Props {
+import { TriplePoint } from "../utils/bayes";
+
+interface Props extends TriplePoint {
   height: number;
   width: number;
   className?: string;
-  low: number;
-  mid: number;
-  high: number;
 }
 
 const ResultsChart = ({ height, width, low, high, mid, className }: Props) => {
@@ -18,7 +17,7 @@ const ResultsChart = ({ height, width, low, high, mid, className }: Props) => {
     if (high && low) {
       setBarWidth(high - low);
     }
-    setRadius(height / 8);
+    setRadius(height / 10);
     setCircleX(mid * width);
   }, [high, low, height, mid, width]);
 
@@ -42,7 +41,7 @@ const ResultsChart = ({ height, width, low, high, mid, className }: Props) => {
       <circle
         style={{
           transform: `translate(${circleX}px, ${height / 2}px)`,
-          transition: "transform 3s ease",
+          transition: "transform 0.8s ease",
         }}
         r={radius}
       />
