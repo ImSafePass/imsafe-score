@@ -1,5 +1,7 @@
 import { TestRecord } from "../utils/test";
 import { NytObject } from "../utils/nyt";
+import { updateSearch } from "../utils/url";
+import { brief } from "../utils/date";
 
 export interface LocationState {
   state?: string;
@@ -54,8 +56,10 @@ const rootReducer = (
   switch (action.type) {
     case "SET_TEST": {
       if (action.test) {
+        updateSearch({ test: action.test.id });
         return { ...state, test: action.test };
       } else {
+        updateSearch({ test: undefined });
         return { ...state, testResult: undefined, test: undefined };
       }
     }
@@ -65,12 +69,14 @@ const rootReducer = (
     }
 
     case "SET_TEST_RESULT": {
+      updateSearch({ result: action.testResult });
       return { ...state, testResult: action.testResult };
     }
 
     // Reset county when setting state.
     // Also, set county options.
     case "SET_STATE": {
+      updateSearch({ state: action.state, county: undefined });
       return {
         ...state,
         location: {
@@ -89,6 +95,7 @@ const rootReducer = (
         .default;
       const countyPopulation = parseInt(statePopData[county]);
 
+      updateSearch({ county: action.county });
       return {
         ...state,
         location: {
@@ -100,6 +107,7 @@ const rootReducer = (
     }
 
     case "SET_TEST_DATE": {
+      updateSearch({ date: brief(action.testDate) });
       return { ...state, testDate: action.testDate };
     }
 

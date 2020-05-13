@@ -10,5 +10,6 @@ export const updateSearch = (obj: object) => {
   const newUrl = window.location.href
     .split("?")[0]
     .concat(`?${queryString.stringify(filteredNewSearch)}`);
+
   window.history.replaceState({ path: newUrl }, "", newUrl);
 };

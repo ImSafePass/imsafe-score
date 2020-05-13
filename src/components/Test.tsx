@@ -133,7 +133,7 @@ const Test = ({
           placeholder="Test name"
           value={qs.type && stringToOptionType(qs.type as string)}
           onChange={(opt: OptionTypeBase) => {
-            updateSearch({ type: opt.value, test: null });
+            updateSearch({ type: opt.value });
             dispatch(setTest(undefined));
             toggleOpen("testType");
           }}
@@ -155,7 +155,6 @@ const Test = ({
           value={test && { value: test, label: test.diagnostic }}
           // @ts-ignore
           onChange={(opt: TestOption) => {
-            updateSearch({ test: opt.value.id });
             dispatch(setTest(opt.value));
           }}
           options={tests
@@ -178,7 +177,6 @@ const Test = ({
           className="w-40 p-1 rounded-md my-4"
           selected={testDate}
           onChange={(date: Date) => {
-            updateSearch({ date: brief(date) });
             dispatch(setTestDate(date));
           }}
           maxDate={today}
@@ -197,11 +195,10 @@ const Test = ({
             <Select
               className="select"
               options={stringArrayToOptionType(stateOptions)}
-              value={location.state && stringToOptionType(location.state)}
+              value={location.state ? stringToOptionType(location.state) : null}
               placeholder="State"
               isSearchable
               onChange={(opt: OptionTypeBase) => {
-                updateSearch({ state: opt.value, county: null });
                 dispatch(setState(opt.value));
                 dispatch(setCounty(undefined));
               }}
@@ -214,10 +211,11 @@ const Test = ({
                 className="select"
                 options={stringArrayToOptionType(countyOptions)}
                 placeholder="County"
-                value={location.county && stringToOptionType(location.county)}
+                value={
+                  location.county ? stringToOptionType(location.county) : null
+                }
                 isSearchable
                 onChange={(opt: OptionTypeBase) => {
-                  updateSearch({ county: opt.value });
                   dispatch(setCounty(opt.value));
                 }}
               />
@@ -244,7 +242,6 @@ const Test = ({
           placeholder="Test name"
           value={stringToOptionType(testResult)}
           onChange={(opt: OptionTypeBase) => {
-            updateSearch({ result: opt.value });
             dispatch(setTestResult(opt.value));
           }}
           options={stringArrayToOptionType(testResults)}

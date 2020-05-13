@@ -1,6 +1,6 @@
 import React, { useEffect, ComponentType } from "react";
 import { Dispatch } from "redux";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import queryString from "query-string";
 import get from "lodash.get";
 
@@ -42,8 +42,16 @@ interface Props {
   tests: TestRecord[];
   test: TestRecord;
   testResult: TestResult;
-  testDate: Date;
+  testDate?: Date;
   location: LocationState;
+}
+
+interface URLDispatcherProps {
+  tests: TestRecord[];
+  test: TestRecord;
+  testDate?: Date;
+  location: LocationState;
+  testResult: TestResult;
 }
 
 const mapStateToProps = (state: ReduxState) => ({
@@ -57,19 +65,15 @@ const mapStateToProps = (state: ReduxState) => ({
   location: state.location,
 });
 
-const Home = ({
-  nyt,
-  dispatch,
-  stateCorrections,
-  prevalenceMultiples,
-  tests,
+const URLDispatcher = ({
   test,
-  testResult,
   testDate,
+  testResult,
   location,
-}: Props) => {
+  tests,
+}: URLDispatcherProps) => {
+  const dispatch = useDispatch();
   const qs = queryString.parse(window.location.search);
-
   useEffect(() => {
     const matchUrlAndState = () => {
       const changes: any = {};
@@ -101,19 +105,33 @@ const Home = ({
       if (qs.county && qs.county !== get(location, "county")) {
         dispatch(setCounty(qs.county as string));
       }
-
-      if (Object.keys(changes).length) {
-        updateSearch(changes);
-      }
     };
 
+    if (tests?.length) {
+      matchUrlAndState();
+    }
+  }, [test, testDate, testResult, location, dispatch, tests, qs]);
+
+  return null;
+};
+
+const Home = ({
+  nyt,
+  dispatch,
+  stateCorrections,
+  prevalenceMultiples,
+  tests,
+  test,
+  testResult,
+  testDate,
+  location,
+}: Props) => {
+  useEffect(() => {
     if (!tests) {
       getTests().then((records) => {
         dispatch(setTests(records));
-        matchUrlAndState();
       });
     } else {
-      matchUrlAndState();
       if (nyt) {
         if (!stateCorrections) {
           getStateCorrections().then((corrections) => {
@@ -140,7 +158,6 @@ const Home = ({
     testResult,
     test,
     dispatch,
-    qs,
     testDate,
     location,
   ]);
@@ -149,6 +166,13 @@ const Home = ({
     <div className="h-full">
       <div className="container mx-auto h-full">
         <div className="flex flex-col items-center h-full">
+          <URLDispatcher
+            tests={tests}
+            testResult={testResult}
+            test={test}
+            location={location}
+            testDate={testDate}
+          />
           {nyt && tests ? <Test /> : <Loader />}
         </div>
       </div>
