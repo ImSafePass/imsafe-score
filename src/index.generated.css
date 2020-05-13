@@ -1,5 +1,8 @@
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
+rect, circle {
+  transition: width 0.3s ease;
+}
 /* Document
    ========================================================================== */
 

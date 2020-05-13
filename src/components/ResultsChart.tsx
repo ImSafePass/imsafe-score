@@ -11,33 +11,40 @@ const ResultsChart = () => {
       if (c) {
         new Chart(c, {
           type: "horizontalBar",
+          options: {
+            scales: {
+              yAxes: [
+                {
+                  stacked: true,
+                },
+              ],
+            },
+          },
           data: {
             //Bring in data
-            // labels: ["Before Test", "After Test"],
+            labels: ["Before Test", "After Test"],
             datasets: [
               {
-                label: "whatever",
-                data: [1, 100],
-                backgroundColor: "rgba(255, 0, 0)",
+                label: "",
+                data: [0],
+                backgroundColor: ["rgba(255, 0, 0, 1)"],
               },
               {
-                label: "Before Test",
-                data: [78, 92],
-                backgroundColor: ["#3341c0", "#7b8484"],
+                label: "",
+                data: [92],
+                backgroundColor: ["rgba(0, 255, 0, 1)"],
               },
               {
-                data: [0, 100],
-                backgroundColor: ["rgba(255, 0, 0)"],
+                label: "",
+                data: [98],
+                backgroundColor: ["#3341c0"],
               },
               {
-                label: "After Test",
-                data: [92, 100],
-                backgroundColor: ["rgba(0, 0, 0, 0.2)"],
+                label: "",
+                data: [100],
+                backgroundColor: ["rgba(0, 0, 0, 0)"],
               },
             ],
-          },
-          options: {
-            //Customize chart options
           },
         });
       }

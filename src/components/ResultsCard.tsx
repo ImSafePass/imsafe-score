@@ -11,7 +11,7 @@ import {
 
 import Link from "./Link";
 import Loader from "./Loader";
-// import ResultsChart from "./ResultsChart";
+import ResultsChart from "./ResultsChartSvg";
 
 interface Props {
   prevalence?: Prevalence;
@@ -92,7 +92,26 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
     <div className="card">
       <h4 className="mb-4">Result Accuracy</h4>
       {content}
-      {/* <ResultsChart /> */}
+      <ResultsChart
+        bars={[
+          {
+            data: {
+              low: 0.14,
+              mid: 0.3,
+              high: 0.4,
+            },
+            label: "Before Test",
+          },
+          {
+            data: {
+              low: 0.8,
+              mid: 0.92,
+              high: 0.98,
+            },
+            label: "After Test",
+          },
+        ]}
+      />
     </div>
   );
 };
