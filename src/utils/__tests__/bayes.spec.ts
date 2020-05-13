@@ -13,6 +13,7 @@ const prep = (triplepoint: TriplePoint) =>
   );
 
 describe("bayes", () => {
+  // This is just to make sure that something external isn't breaking the test
   it("has a good default test record", () => {
     const test = baseState.test;
     expect(test.specificity).toEqual({
