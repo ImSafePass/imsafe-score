@@ -56,7 +56,7 @@ const rootReducer = (
   switch (action.type) {
     case "SET_TEST": {
       if (action.test) {
-        updateSearch({ test: action.test.id });
+        updateSearch({ test: action.test.id, type: action.test.type });
         return { ...state, test: action.test };
       } else {
         updateSearch({ test: undefined });

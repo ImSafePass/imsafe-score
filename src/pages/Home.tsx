@@ -10,7 +10,7 @@ import {
   getPrevalenceMultiples,
   getTests,
 } from "../utils/api";
-import { updateSearch } from "../utils/url";
+
 import {
   setNyt,
   setStateCorrections,
@@ -75,40 +75,34 @@ const URLDispatcher = ({
   const dispatch = useDispatch();
   const qs = queryString.parse(window.location.search);
   useEffect(() => {
-    const matchUrlAndState = () => {
-      const changes: any = {};
-      if (qs.test && get(test, "id") !== qs.test) {
-        const foundTest = (tests || []).find((r) => r.id === qs.test);
-        if (foundTest) {
-          dispatch(setTest(foundTest));
-          if (!qs.type) {
-            changes.type = foundTest.type;
-          }
-        }
-      }
+    if (!tests.length) {
+      return;
+    }
 
-      if (qs.date && qs.date !== (testDate && brief(testDate))) {
-        const date = new Date(qs.date as string);
-        if (isValidDate(date)) {
-          dispatch(setTestDate(date));
-        }
+    if (qs.test && get(test, "id") !== qs.test) {
+      const foundTest = (tests || []).find((r) => r.id === qs.test);
+      if (foundTest) {
+        dispatch(setTest(foundTest));
       }
+    }
 
-      if (qs.result && qs.result !== testResult) {
-        dispatch(setTestResult(qs.result as TestResult));
+    if (qs.date && qs.date !== (testDate && brief(testDate))) {
+      const date = new Date(qs.date as string);
+      if (isValidDate(date)) {
+        dispatch(setTestDate(date));
       }
+    }
 
-      if (qs.state && qs.state !== get(location, "state")) {
-        dispatch(setState(qs.state as string));
-      }
+    if (qs.result && qs.result !== testResult) {
+      dispatch(setTestResult(qs.result as TestResult));
+    }
 
-      if (qs.county && qs.county !== get(location, "county")) {
-        dispatch(setCounty(qs.county as string));
-      }
-    };
+    if (qs.state && qs.state !== get(location, "state")) {
+      dispatch(setState(qs.state as string));
+    }
 
-    if (tests?.length) {
-      matchUrlAndState();
+    if (qs.county && qs.county !== get(location, "county")) {
+      dispatch(setCounty(qs.county as string));
     }
   }, [test, testDate, testResult, location, dispatch, tests, qs]);
 
