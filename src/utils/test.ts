@@ -6,7 +6,7 @@ import { LowMidHigh } from "../redux/reducer";
 /** PUBLIC */
 
 export type TestType = "Serology" | "Molecular";
-export type TestResult = "Positive" | "Negative" | "Indeterminate";
+export type TestResult = "Positive" | "Negative";
 
 export interface ApiTestRecord {
   id: string;

@@ -1,12 +1,16 @@
 import { StateCorrections, PrevalenceMultiples } from "./reducer";
-import { TestRecord, TestResult } from "../utils/test";
+import { TestRecord, TestResult, TestType } from "../utils/test";
 import { NytObject } from "../utils/nyt";
 
-export const setTest = (test: TestRecord | undefined) => ({
+export const setTest = (test?: TestRecord) => ({
   type: "SET_TEST",
   test,
 });
 
+export const setTestType = (testType?: TestType) => ({
+  type: "SET_TEST_TYPE",
+  testType,
+});
 export const setTests = (tests: TestRecord[]) => ({
   type: "SET_TESTS",
   tests,
@@ -17,7 +21,7 @@ export const setState = (state: string) => ({
   state,
 });
 
-export const setCounty = (county: string | undefined) => ({
+export const setCounty = (county?: string) => ({
   type: "SET_COUNTY",
   county,
 });

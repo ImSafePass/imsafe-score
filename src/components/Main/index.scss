@@ -1,0 +1,30 @@
+.question {
+  &__question {
+    font-size: 20px;
+    font-weight: bold;
+    color: #3341c0;
+    cursor: pointer;
+  }
+
+  &__unimportant {
+    font-weight: normal;
+    color: black;
+  }
+
+  &__opener {
+    font-weight: normal;
+    text-decoration: underline;
+  }
+
+  > .flex {
+    width: 50%;
+
+    &:nth-of-type(2) {
+      padding-left: 20px;
+    }
+  }
+
+  &__multi {
+    width: 100%;
+  }
+}

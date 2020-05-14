@@ -37,15 +37,6 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
 
   const res = testResult.toLowerCase();
 
-  if (testResult === "Indeterminate") {
-    return (
-      <div className="card">
-        <h4 className="mb-4">Result Accuracy</h4>
-        <p>We can apply no further analysis to indeterminate test results.</p>
-      </div>
-    );
-  }
-
   const results = bayesResults(prevalence, test, testResult);
   const { before, after } = results;
 

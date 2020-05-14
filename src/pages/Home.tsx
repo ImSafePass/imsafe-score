@@ -23,7 +23,7 @@ import {
   setCounty,
 } from "../redux/actions";
 import { NytObject } from "../utils/nyt";
-import Test from "../components/Test";
+import Test from "../components/Main";
 import {
   ReduxState,
   StateCorrections,

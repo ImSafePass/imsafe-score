@@ -55,7 +55,7 @@ p:not(:last-of-type) {
 }
 
 strong {
-  @apply font-extrabold underline;
+  @apply font-bold;
 }
 
 .react-datepicker__input-container input {
