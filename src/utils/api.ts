@@ -6,12 +6,7 @@ import {
   PrevalenceMultiples,
 } from "../redux/reducer";
 import { NytObject, CSVRow, arrayToStateObject } from "./nyt";
-import {
-  TestRecord,
-  ApiTestRecord,
-  getTestRecords,
-  TestRecordResults,
-} from "./test";
+import { TestRecord, ApiTestRecord, getTestRecords } from "./test";
 
 interface ApiRecord {
   fields: any;

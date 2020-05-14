@@ -1,9 +1,7 @@
-import { getPrevalenceFromState, getRelevantDates } from "../prevalence";
+import { getRelevantDates } from "../prevalence";
 import { brief } from "../date";
 
-import { parseTestRecord } from "../test";
 import {
-  manufacturerScoring,
   testDate,
   serologyRelevanceDate,
   molecularCutoffDate,

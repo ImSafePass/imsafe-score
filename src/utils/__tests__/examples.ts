@@ -1,9 +1,4 @@
-import {
-  ApiTestRecord,
-  parseTestRecord,
-  TestResult,
-  TestRecord,
-} from "../test";
+import { ApiTestRecord, parseTestRecord, TestRecord } from "../test";
 import { NytObject } from "../nyt";
 import {
   ReduxState,
