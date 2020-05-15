@@ -12,13 +12,9 @@ import { TestRecord, TestResult } from "../../utils/test";
 import { NytObject } from "../../utils/nyt";
 import { LocationState } from "../../redux/reducer";
 
-import ResultsCard from "../ResultsCard";
-
-import TestTypeQuestion from "../questions/TestTypeQuestion";
-import TestQuestion from "../questions/TestQuestion";
-import TestDateQuestion from "../questions/TestDateQuestion";
-import LocationQuestion from "../questions/LocationQuestion";
-import TestResultQuestion from "../questions/TestResultQuestion";
+import { QuestionName } from "./helpers";
+import InfoColumn from "./InfoColumn";
+import QuestionColumn from "./QuestionColumn";
 
 interface Props {
   stateOptions: string[];
@@ -54,7 +50,7 @@ const mapStateToProps = (state: ReduxState) => {
 
 const Main = ({ testDate, test, location, testResult }: Props) => {
   const qs = queryString.parse(window.location.search);
-  const [open, setOpen] = useState<{ [key: string]: boolean }>({
+  const [open, setOpen] = useState<{ [key in QuestionName]: boolean }>({
     testType: !qs.type,
     test: !test,
     testDate: !testDate,
@@ -62,28 +58,21 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     testResult: !testResult,
   });
 
-  const questions = [
-    !qs.type || open.testType,
-    !test || open.test,
-    !testDate || open.testDate,
-    !location.state || !location.county || open.location,
-    !testResult || open.testResult,
-  ];
+  const questions: { [key in QuestionName]: any } = {
+    testType: !qs.type || open.testType,
+    test: !test || open.test,
+    testDate: !testDate || open.testDate,
+    location: !location.state || !location.county || open.location,
+    testResult: !testResult || open.testResult,
+  };
 
-  const questionToDisplayIndex = questions.findIndex((pair) => pair); // First unanswered or open question
+  const currentQuestionName = (Object.keys(questions) as QuestionName[]).find(
+    (key) => questions[key]
+  ); // Name of first unanswered or open question
 
-  const questionEls = [
-    TestTypeQuestion,
-    TestQuestion,
-    TestDateQuestion,
-    LocationQuestion,
-    TestResultQuestion,
-  ];
-  const Current = questionEls[questionToDisplayIndex] || ResultsCard;
-
-  const openQuestion = (questionName: string) =>
+  const openQuestion = (questionName: QuestionName) =>
     setOpen({ ...open, [questionName]: true });
-  const closeQuestion = (questionName: string) =>
+  const closeQuestion = (questionName: QuestionName) =>
     setOpen({ ...open, [questionName]: false });
 
   useEffect(() => {
@@ -96,15 +85,28 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     });
   }, [test, testDate, testResult, location, qs.type]);
 
-  return (
-    <div className="mx-auto max-w-4xl my-10">
-      <Current
-        remainingNum={questions.length - questionToDisplayIndex}
-        open={openQuestion}
-        close={closeQuestion}
-      />
-    </div>
-  );
+  if (currentQuestionName) {
+    return (
+      <div className="flex lg:flex-row flex-col w-full items-center justify-center">
+        <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pr-8">
+          <QuestionColumn
+            // @ts-ignore
+            questionName={currentQuestionName}
+            close={closeQuestion}
+            open={openQuestion}
+          />
+        </div>
+        <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pl-8">
+          <InfoColumn
+            // @ts-ignore
+            questionName={currentQuestionName}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return <h2>Here</h2>;
 };
 
 export default connect(mapStateToProps)(Main as ComponentType);

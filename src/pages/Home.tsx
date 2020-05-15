@@ -157,9 +157,9 @@ const Home = ({
   ]);
 
   return (
-    <div className="h-full">
-      <div className="container mx-auto h-full">
-        <div className="flex flex-col items-center h-full">
+    <div className="page">
+      <div className="container mx-auto h-full flex flex-col items-center">
+        <div className="w-full h-full">
           <URLDispatcher
             tests={tests}
             testResult={testResult}
@@ -167,7 +167,13 @@ const Home = ({
             location={location}
             testDate={testDate}
           />
-          {nyt && tests ? <Test /> : <Loader />}
+          {nyt && tests ? (
+            <div className="h-full flex justify-center align-center">
+              <Test />
+            </div>
+          ) : (
+            <Loader />
+          )}
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ interface Props {
 
 const Layout = ({ children }: Props) => (
   <div className="h-screen">
-    <header className="bg-primary h-20 px-8">
+    <header className="bg-primary px-8 fixed w-full">
       <div className="flex h-full justify-between container items-center mx-auto">
         <div className="flex flex-row items-center">
           <Logo width={35} />

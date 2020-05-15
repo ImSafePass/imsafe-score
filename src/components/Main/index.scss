@@ -1,9 +1,12 @@
+@import "../../styles/imports.scss";
+
 .question {
+  height: 100%;
+
   &__question {
     font-size: 20px;
     font-weight: bold;
-    color: #3341c0;
-    cursor: pointer;
+    color: $primaryBlue;
   }
 
   &__unimportant {
@@ -14,6 +17,8 @@
   &__opener {
     font-weight: normal;
     text-decoration: underline;
+    color: $primaryBlue;
+    cursor: pointer;
   }
 
   > .flex {
@@ -24,7 +29,13 @@
     }
   }
 
-  &__multi {
-    width: 100%;
+  button {
+    background-color: $primaryBlue;
+    cursor: default;
   }
+}
+
+.info-column {
+  padding: 15px;
+  background-color: $lightBlue;
 }

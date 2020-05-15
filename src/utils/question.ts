@@ -10,7 +10,7 @@ export const stringArrayToOptionType = (
   stringArray: string[]
 ): OptionTypeBase[] => stringArray.map(stringToOptionType);
 
-export interface BaseQuestionProps {
+export interface BaseInfoColumnProps {
   remainingNum: number;
   open: (questionName: string) => void;
   close: (questionName: string) => void;

@@ -18,7 +18,6 @@ const Diagram = () => {
 
         c.arc(width - 10, 10, 10, 0, Math.PI / 4, true);
       }
-      // debugger;
     }
   }, [ref, width]);
 

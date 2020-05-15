@@ -18,6 +18,11 @@ export const spelled = (date: Date) => {
   return `${month} ${date.getDate()}`;
 };
 
+export const spelledWithYear = (date: Date) => {
+  const month = months[date.getMonth()];
+  return `${month} ${date.getDate()}, ${date.getFullYear()}`;
+};
+
 export const brief = (date: Date) => date.toISOString().split("T")[0];
 
 export const isValidDate = (d: any) => d instanceof Date && !isNaN(d.getTime());
