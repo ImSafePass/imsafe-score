@@ -1,5 +1,4 @@
 import React, { ComponentType } from "react";
-import queryString from "query-string";
 import Markdown from "react-markdown";
 import numeral from "numeral";
 import { connect } from "react-redux";
@@ -8,13 +7,17 @@ import { TestRecord } from "../../utils/test";
 import { LowMidHigh } from "../../redux/reducer";
 import { spelledWithYear } from "../../utils/date";
 import { TriplePoint } from "../../utils/bayes";
+import { ReactComponent as Caret } from "../../assets/caret.svg";
 
 import { mapStateToProps, QuestionProps, meetsRequirements } from "./helpers";
 
 const comp = (desc: string) => {
   return (
-    <div className="info-column lg:ml-4">
-      <Markdown source={desc.replace(/\n\s+/g, "\n\n")} />
+    <div className="flex flex-row items-center">
+      <Caret className="lg:ml-4 lg:block hidden" style={{ marginRight: -1 }} />
+      <div className="info-column">
+        <Markdown source={desc.replace(/\n\s+/g, "\n\n")} />
+      </div>
     </div>
   );
 };

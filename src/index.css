@@ -2,37 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-  @apply text-6xl;
-  font-family: "Heebo";
-}
-
-h3 {
-  @apply text-4xl;
-  font-family: "Heebo";
-}
-
-h4 {
-  @apply text-3xl;
-  font-family: "Heebo";
-}
-
-a {
-  @apply text-blue-800 transition-colors duration-200;
-}
-
-a:hover {
-  @apply text-blue-900;
-}
-
-p,
-label,
-input,
-.select {
-  @apply text-xl;
-  font-family: "Roboto";
-}
-
 .select {
   @apply p-1 rounded-md my-2;
 }

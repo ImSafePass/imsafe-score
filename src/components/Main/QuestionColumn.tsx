@@ -2,6 +2,7 @@ import React, { ComponentType } from "react";
 
 import Select, { OptionTypeBase } from "react-select";
 import DatePicker from "react-datepicker";
+import { connect } from "react-redux";
 
 import {
   QuestionProps,
@@ -9,9 +10,10 @@ import {
   mapStateToProps,
   questionNames,
 } from "./helpers";
+import ResultsDisplay from "./ResultsDisplay";
+
 import QuestionTitle from "./QuestionTitle";
 import { TestRecord, TestType, TestResult } from "../../utils/test";
-import { connect } from "react-redux";
 import { fullTestType } from "../../utils/prevalence";
 import {
   setTestType,
@@ -111,7 +113,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
     }
     case "location": {
       content = (
-        <div className="flex flex-row question__multi">
+        <div className="flex lg:flex-row flex-col question__multi">
           <div className="flex flex-1">
             <Select
               className="select"
@@ -177,6 +179,9 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       );
       break;
     }
+    case "display": {
+      content = <ResultsDisplay />;
+    }
   }
 
   const numLeft = questionNames.length - questionNames.indexOf(questionName);
@@ -184,13 +189,16 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
     <div className="flex flex-col question">
       <QuestionTitle {...props} />
       {content}
-      <div>
-        <button className="mt-2 py-1 px-2 text-sm rounded-full text-white">
-          {numLeft === 1
-            ? "Last question"
-            : `${numLeft - 1} more quick questions`}
-        </button>
-      </div>
+
+      {questionName === "display" ? null : (
+        <div>
+          <button className="mt-2 py-1 px-2 text-sm rounded-full text-white">
+            {numLeft === 1
+              ? "Last question"
+              : `${numLeft - 1} more quick questions`}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

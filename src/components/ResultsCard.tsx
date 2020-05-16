@@ -75,7 +75,7 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
         "true" {res}, and, conversely, a {((1 - after.mid) * 100).toFixed(2)}%
         chance that it is a "false" {res}.
       </p>
-      <ResultsChart
+      {/* <ResultsChart
         bars={[
           {
             data: before,
@@ -86,7 +86,7 @@ const ResultsCard = ({ prevalence, testResult, test }: Props) => {
             label: "After Test",
           },
         ]}
-      />
+      /> */}
     </div>
   );
 };

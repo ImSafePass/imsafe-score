@@ -1,44 +1,52 @@
 @import "./imports.scss";
+@import "./_type.scss";
 
 header {
   height: #{$headerHeight}px;
 }
 
-.page {
-  padding-top: #{$headerHeight}px;
-  height: 100vh;
+.hero {
+  z-index: 2;
+  width: 100%;
+  background-color: $primaryBlue;
 }
 
-.result-bar {
-  &.bar-0 {
-    .bar-bg {
-      fill: transparentize(blue, 0.8);
-    }
+[class^="container"] {
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
 
-    .bar-range {
-      fill: blue;
-
-      &:hover {
-        fill: darken(blue, 0.3);
-      }
-    }
+.container--med {
+  @media only screen and (min-width: $md) {
+    width: 80%;
   }
 
-  &.bar-1 {
-    .bar-bg {
-      fill: transparentize(red, 0.8);
-    }
+  @media only screen and (min-width: $lg) {
+    width: 75%;
+  }
+}
 
-    .bar-range {
-      fill: red;
-
-      &:hover {
-        fill: darken(red, 0.3);
-      }
-    }
+.container--small {
+  @media only screen and (min-width: $md) {
+    width: 80%;
   }
 
-  circle {
-    fill: black;
+  @media only screen and (min-width: $lg) {
+    width: 75%;
   }
+
+  @media only screen and (min-width: $lg) {
+    width: 60%;
+  }
+}
+
+.container--only-lg {
+  @media only screen and (max-width: $lg) {
+    width: 100%;
+  }
+}
+
+.container--narrow {
+  max-width: 800px;
 }

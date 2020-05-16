@@ -1,10 +1,12 @@
-import React from "react";
+import React, { ComponentType } from "react";
+import { connect } from "react-redux";
 
 import {
   makeOpener,
   QuestionProps,
   meetsRequirements,
   Unimportant as U,
+  mapStateToProps,
 } from "./helpers";
 import { fullTestType } from "../../utils/prevalence";
 import { TestType, TestRecord } from "../../utils/test";
@@ -21,13 +23,7 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
     test,
     testDate,
     location,
-    prevalence,
-    tests,
-    close,
     open,
-    dispatch,
-    countyOptions,
-    stateOptions,
     testResult,
   } = props;
 
@@ -104,8 +100,9 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
     </O>
   );
 
-  return (
-    <h3 className="question__question">
+  const allButResultEl = (
+    <>
+      {" "}
       <U>On </U>
       {testDateEl}
       <U> in </U>
@@ -117,10 +114,28 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
       <U> known as "</U>
       {diagnosticEl}
       <U>". </U>
+    </>
+  );
+
+  if (questionName === "testResult") {
+    return (
+      <h3 className="question__question">
+        {allButResultEl}
+        <br />
+        <span className="block mt-4 mb-2">What was your test result?</span>
+      </h3>
+    );
+  }
+
+  return (
+    <h3 className="question__question">
+      {allButResultEl}
       <br />
-      <span className="block mt-4 mb-2">What was your test result?</span>
+      <U>Your result was '</U>
+      <O name="testResult">{(testResult as string).toLocaleLowerCase()}</O>
+      <U>'.</U>
     </h3>
   );
 };
 
-export default QuestionTitle;
+export default connect(mapStateToProps)(QuestionTitle as ComponentType);

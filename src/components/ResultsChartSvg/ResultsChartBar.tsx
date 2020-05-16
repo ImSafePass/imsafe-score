@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { TriplePoint } from "../utils/bayes";
+import { TriplePoint } from "../../utils/bayes";
+
+import "./index.scss";
 
 interface Props extends TriplePoint {
   height: number;

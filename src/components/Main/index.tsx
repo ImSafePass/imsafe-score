@@ -15,6 +15,7 @@ import { LocationState } from "../../redux/reducer";
 import { QuestionName } from "./helpers";
 import InfoColumn from "./InfoColumn";
 import QuestionColumn from "./QuestionColumn";
+import QuestionTitle from "./QuestionTitle";
 
 interface Props {
   stateOptions: string[];
@@ -32,7 +33,6 @@ interface Props {
 const mapStateToProps = (state: ReduxState) => {
   const nyt: NytObject = state.nyt as NytObject;
   const location = state.location;
-  const testTypeObj: any = {};
 
   return {
     stateOptions: nyt ? Object.keys(nyt).sort() : [],
@@ -56,6 +56,7 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     testDate: !testDate,
     location: !(location.state && location.county),
     testResult: !testResult,
+    display: true,
   });
 
   const questions: { [key in QuestionName]: any } = {
@@ -64,6 +65,7 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     testDate: !testDate || open.testDate,
     location: !location.state || !location.county || open.location,
     testResult: !testResult || open.testResult,
+    display: true,
   };
 
   const currentQuestionName = (Object.keys(questions) as QuestionName[]).find(
@@ -82,10 +84,11 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
       testDate: !testDate,
       location: !(location.state && location.county),
       testResult: !testResult,
+      display: true,
     });
   }, [test, testDate, testResult, location, qs.type]);
 
-  if (currentQuestionName) {
+  if (currentQuestionName && currentQuestionName !== "display") {
     return (
       <div className="flex lg:flex-row flex-col w-full items-center justify-center">
         <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pr-8">
@@ -106,7 +109,16 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     );
   }
 
-  return <h2>Here</h2>;
+  return (
+    <div className="flex flex-col w-full justify-start">
+      <QuestionColumn
+        // @ts-ignore
+        questionName={currentQuestionName}
+        close={closeQuestion}
+        open={openQuestion}
+      />
+    </div>
+  );
 };
 
 export default connect(mapStateToProps)(Main as ComponentType);

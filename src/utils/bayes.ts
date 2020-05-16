@@ -8,6 +8,12 @@ export interface TriplePoint {
   high?: number;
 }
 
+export interface ReliableTriplePoint {
+  low: number;
+  mid: number;
+  high: number;
+}
+
 interface BayesResult {
   specificity: number;
   sensitivity: number;
@@ -64,14 +70,14 @@ const bayesResults = (
     high: highPopPercent,
   };
 
-  const before: TriplePoint =
+  const before: ReliableTriplePoint =
     testResult === "Positive"
-      ? pop
-      : {
+      ? (pop as ReliableTriplePoint)
+      : ({
           low: pop.high ? 1 - pop.high : pop.high,
           mid: pop.mid ? 1 - pop.mid : pop.mid,
           high: pop.low ? 1 - pop.low : pop.low,
-        };
+        } as ReliableTriplePoint);
 
   return { before, after };
 };

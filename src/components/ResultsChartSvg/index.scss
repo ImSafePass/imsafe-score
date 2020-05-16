@@ -1,0 +1,54 @@
+@import "../../styles/imports.scss";
+
+.result-bars {
+  [class^="bar__"] {
+    border-radius: 2px;
+  }
+
+  .bar__big {
+    height: 50px;
+  }
+
+  .bar__small {
+    height: 30px;
+  }
+
+  .bar__percent--low,
+  .bar__percent--high {
+    align-self: flex-start;
+    color: lighten(black, 20);
+    font-weight: lighter;
+    top: -45px;
+    font-size: 9px;
+  }
+
+  .bar-before {
+    .bar__big {
+      background-color: $lightBlue;
+    }
+
+    .bar__small {
+      background-color: darken($lightBlue, 10);
+    }
+
+    .bar__percent--mid {
+      color: darken($lightBlue, 10);
+    }
+  }
+
+  .bar-after {
+    .bar__big {
+      background-color: #ccc;
+    }
+
+    .bar__small {
+      background-color: $red;
+    }
+
+    .bar__percent--mid {
+      font-size: 15px;
+      font-weight: 700;
+      color: $red;
+    }
+  }
+}

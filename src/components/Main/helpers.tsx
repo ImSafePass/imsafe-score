@@ -12,7 +12,8 @@ export type QuestionName =
   | "test"
   | "testDate"
   | "location"
-  | "testResult";
+  | "testResult"
+  | "display";
 
 export const questionNames: QuestionName[] = [
   "testType",
@@ -73,19 +74,20 @@ export const meetsRequirements = (props: QuestionProps): boolean => {
     prevalence,
     stateOptions,
     testDate,
+    testResult,
   } = props;
 
   const meetsTest = testType && tests;
   const meetsTestDate = meetsTest && tests && test;
   const meetsLocation = meetsTestDate && stateOptions && testDate;
-
+  const meetsTestResult = location.state && location.county && prevalence;
   const requirements: { [key in QuestionName]: any } = {
     testType: true,
     test: meetsTest,
     testDate: meetsTestDate,
     location: meetsLocation,
-    testResult:
-      meetsLocation && location.state && location.county && prevalence,
+    testResult: meetsLocation && meetsTestResult,
+    display: meetsLocation && meetsTestResult && testResult,
   };
 
   return !!requirements[questionName];

@@ -1,0 +1,95 @@
+h1 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 51px;
+  letter-spacing: -0.02em;
+
+  @media only screen and (max-width: $lg) {
+    font-size: 32px;
+    line-height: 36px;
+  }
+}
+
+h2 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 40px;
+  letter-spacing: -0.03em;
+
+  @media only screen and (max-width: $lg) {
+    font-size: 28px;
+    line-height: 34px;
+  }
+}
+
+h3 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 40px;
+  letter-spacing: -0.03em;
+}
+
+h4 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 35px;
+
+  @media only screen and (max-width: $lg) {
+    font-size: 19px;
+    line-height: 113.2%;
+  }
+}
+
+h5 {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+h6 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 23px;
+}
+
+@mixin p {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+
+  @media only screen and (max-width: $lg) {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+p,
+select,
+button,
+label,
+input {
+  @include p;
+}
+
+a {
+  color: $primaryBlue;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: darken($primaryBlue, 10);
+  }
+}
