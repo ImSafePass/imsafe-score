@@ -103,24 +103,6 @@ const ResultsChart = ({ before, after }: Props) => {
             </div>
           ))}
         </div>
-
-        {/* Prevalence indicator */}
-        {/* <div
-          style={{
-            borderBottom: "1px solid #aaa",
-            left: `${before.low * 100}%`,
-            width: `${(before.high - before.low) * 100}%`,
-          }}
-        />
-        <div
-          style={{
-            left: `calc(${before.low * 100}%)`,
-            width: 10,
-            transform: "rotate(90deg)",
-            marginBottom: 5,
-            borderBottom: "1px solid #aaa",
-          }}
-        /> */}
       </div>
     </div>
   );
