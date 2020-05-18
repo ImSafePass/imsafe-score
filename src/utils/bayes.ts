@@ -44,8 +44,13 @@ const bayesResults = (
       const rawSensitivity = test.sensitivity[key];
 
       if (rawSpecificity && rawSensitivity) {
-        const specificity = (rawSpecificity as number) / 100;
-        const sensitivity = (rawSensitivity as number) / 100;
+        const process = (raw: number) => {
+          const result = raw / 100;
+          return result === 1 ? 0.99 : result || 0.01;
+        };
+
+        const specificity = process(rawSpecificity as number);
+        const sensitivity = process(rawSensitivity as number);
 
         const bayesPercent =
           testResult === "Positive"

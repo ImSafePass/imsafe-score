@@ -205,7 +205,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
           <button className="mt-2 py-1 px-2 text-sm rounded-full text-white">
             {numLeft === 1
               ? "Last question"
-              : `${numLeft - 1} more quick questions`}
+              : `${numLeft - 1} more quick question${numLeft === 2 ? "" : "s"}`}
           </button>
         </div>
       )}

@@ -46,10 +46,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       return comp(description);
     }
     case "test": {
-      const description =
-        testType === "Serology"
-          ? `A blood (**serology**) test gauges antibody levels which show that your body has responded to a COVID-19 infection.`
-          : `A swab, spit, or breath condensate (** molecular **) test looks to confirm an active infection.`;
+      const description = `Different test manufacturers and test kits have different accuracies. Select the test kit you used so we can help indicate the predictive value of your results`;
       return comp(description);
     }
     case "testDate": {

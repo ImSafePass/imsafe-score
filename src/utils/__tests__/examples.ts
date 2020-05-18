@@ -11,6 +11,7 @@ import {
   activeInfectionLengthDays,
   antibodyDelayDays,
   getPrevalenceFromState,
+  Prevalence,
 } from "../prevalence";
 
 interface ApiTestRecordForSpec extends ApiTestRecord {
@@ -218,4 +219,4 @@ export const baseState: ReduxState = {
 };
 
 export const prevalence = (state: ReduxState = baseState) =>
-  getPrevalenceFromState(state);
+  getPrevalenceFromState(state) as Prevalence;
