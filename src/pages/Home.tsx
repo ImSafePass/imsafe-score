@@ -168,7 +168,7 @@ const Home = ({
             testDate={testDate}
           />
           <div className="flex flex-col justify-center align-center">
-            {nyt && tests ? <Test /> : <Loader />}
+            {tests ? <Test /> : <Loader />}
           </div>
         </div>
       </div>

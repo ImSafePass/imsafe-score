@@ -36,9 +36,10 @@ const mapStateToProps = (state: ReduxState) => {
 
   return {
     stateOptions: nyt ? Object.keys(nyt).sort() : [],
-    countyOptions: location.state
-      ? Object.keys(nyt[location.state]).sort()
-      : undefined,
+    countyOptions:
+      location.state && nyt
+        ? Object.keys(nyt[location.state]).sort()
+        : undefined,
     testDate: state.testDate,
     test: state.test,
     tests: state.tests,

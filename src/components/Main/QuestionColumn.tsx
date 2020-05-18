@@ -11,6 +11,7 @@ import {
   questionNames,
 } from "./helpers";
 import ResultsDisplay from "./ResultsDisplay";
+import Loader from "../Loader";
 
 import QuestionTitle from "./QuestionTitle";
 import { TestRecord, TestType, TestResult } from "../../utils/test";
@@ -48,6 +49,8 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
     countyOptions,
     stateOptions,
     testResult,
+    stateCorrections,
+    prevalenceMultiples,
   } = props;
 
   let content;
@@ -112,7 +115,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       break;
     }
     case "location": {
-      content = (
+      content = stateOptions ? (
         <div className="flex lg:flex-row flex-col question__multi">
           <div className="flex flex-1">
             <Select
@@ -144,6 +147,8 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
             </div>
           ) : null}
         </div>
+      ) : (
+        <Loader />
       );
       break;
     }
@@ -180,7 +185,12 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       break;
     }
     case "display": {
-      content = <ResultsDisplay />;
+      content =
+        stateCorrections && prevalenceMultiples ? (
+          <ResultsDisplay />
+        ) : (
+          <Loader />
+        );
     }
   }
 

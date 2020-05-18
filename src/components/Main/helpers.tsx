@@ -3,7 +3,12 @@ import { Dispatch } from "redux";
 import queryString from "query-string";
 
 import { TestRecord, TestType, TestResult } from "../../utils/test";
-import { LocationState, ReduxState } from "../../redux/reducer";
+import {
+  LocationState,
+  ReduxState,
+  StateCorrections,
+  PrevalenceMultiples,
+} from "../../redux/reducer";
 import { NytObject } from "../../utils/nyt";
 import { Prevalence, getPrevalenceFromState } from "../../utils/prevalence";
 
@@ -38,11 +43,13 @@ export interface QuestionProps {
   dispatch: Dispatch;
   countyOptions: string[];
   stateOptions: string[];
+  stateCorrections?: StateCorrections;
+  prevalenceMultiples?: PrevalenceMultiples;
 }
 
 export const mapStateToProps = (state: ReduxState) => {
   const testType = queryString.parse(window.location.search).type;
-  const { location, nyt, test } = state;
+  const { location, nyt, test, stateCorrections, prevalenceMultiples } = state;
   const prevalence =
     test && location.state && location.county && nyt
       ? getPrevalenceFromState(state)
@@ -61,6 +68,8 @@ export const mapStateToProps = (state: ReduxState) => {
     prevalence,
     stateOptions: nyt ? Object.keys(nyt).sort() : [],
     countyOptions,
+    stateCorrections,
+    prevalenceMultiples,
   } as Partial<QuestionProps>;
 };
 
@@ -73,21 +82,28 @@ export const meetsRequirements = (props: QuestionProps): boolean => {
     location,
     prevalence,
     stateOptions,
+    stateCorrections,
+    prevalenceMultiples,
     testDate,
     testResult,
   } = props;
 
   const meetsTest = testType && tests;
   const meetsTestDate = meetsTest && tests && test;
-  const meetsLocation = meetsTestDate && stateOptions && testDate;
+  const meetsLocation = meetsTestDate && testDate;
   const meetsTestResult = location.state && location.county && prevalence;
   const requirements: { [key in QuestionName]: any } = {
     testType: true,
     test: meetsTest,
     testDate: meetsTestDate,
     location: meetsLocation,
-    testResult: meetsLocation && meetsTestResult,
-    display: meetsLocation && meetsTestResult && testResult,
+    testResult: meetsLocation && testDate && meetsTestResult,
+    display:
+      meetsLocation &&
+      meetsTestResult &&
+      testResult &&
+      stateCorrections &&
+      prevalenceMultiples,
   };
 
   return !!requirements[questionName];
