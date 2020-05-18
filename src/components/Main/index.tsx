@@ -15,7 +15,6 @@ import { LocationState } from "../../redux/reducer";
 import { QuestionName } from "./helpers";
 import InfoColumn from "./InfoColumn";
 import QuestionColumn from "./QuestionColumn";
-import QuestionTitle from "./QuestionTitle";
 
 interface Props {
   stateOptions: string[];
@@ -92,7 +91,10 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     });
   }, [test, testDate, testResult, location, qs.type]);
 
-  if (currentQuestionName && currentQuestionName !== "display") {
+  if (
+    currentQuestionName &&
+    !["display", "intro"].includes(currentQuestionName)
+  ) {
     return (
       <div className="flex lg:flex-row flex-col w-full items-center justify-center">
         <div
@@ -107,14 +109,12 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
             open={openQuestion}
           />
         </div>
-        {currentQuestionName !== "intro" ? (
-          <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pl-8">
-            <InfoColumn
-              // @ts-ignore
-              questionName={currentQuestionName}
-            />
-          </div>
-        ) : null}
+        <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pl-8">
+          <InfoColumn
+            // @ts-ignore
+            questionName={currentQuestionName}
+          />
+        </div>
       </div>
     );
   }

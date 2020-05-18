@@ -54,6 +54,16 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
     </p>
   );
 
+  const testMeasureSourceText = test?.fdaApprovalDate
+    ? `This is an FDA-authorized test with a stated accuracy of`
+    : `This test has a stated accuracy (${test?.chosenTestEntity} measure) of`;
+
+  const testAccuracyText = `${(test?.sensitivity.mid as number).toFixed(
+    2
+  )} sensitivity and ${(test?.specificity.mid as number).toFixed(
+    2
+  )}% specificity`;
+
   return (
     <>
       <div className="card my-8" style={{ paddingLeft: 30, paddingRight: 30 }}>
@@ -81,6 +91,15 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
             testing is extremely rare. Likewise, a negative is more likely to be
             a "false negative" if the condition is extremely common than if the
             condition is extremely rare.
+          </p>
+          <p>
+            You took{" "}
+            <strong>
+              {test?.diagnostic} by {test?.manufacturer}
+            </strong>
+            . {testMeasureSourceText} {testAccuracyText}. Your likelihood of a
+            true {testResult?.toLocaleLowerCase()} also depends on your prior
+            probability of infection.
           </p>
           <h5 className="my-4">Prior Probability</h5>
           <p>
