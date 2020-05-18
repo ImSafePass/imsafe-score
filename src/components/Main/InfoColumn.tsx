@@ -23,7 +23,7 @@ const comp = (desc: string) => {
 };
 
 const InfoColumns: React.SFC<QuestionProps> = (props) => {
-  if (!meetsRequirements(props)) {
+  if (!meetsRequirements(props) || props.questionName === "intro") {
     return null;
   }
 

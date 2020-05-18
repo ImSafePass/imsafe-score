@@ -19,10 +19,6 @@ p:not(:last-of-type) {
   @apply my-10;
 }
 
-.card {
-  @apply w-full bg-gray-200 rounded-sm shadow-md px-8 py-10 my-10;
-}
-
 strong {
   @apply font-bold;
 }

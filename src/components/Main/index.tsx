@@ -52,6 +52,7 @@ const mapStateToProps = (state: ReduxState) => {
 const Main = ({ testDate, test, location, testResult }: Props) => {
   const qs = queryString.parse(window.location.search);
   const [open, setOpen] = useState<{ [key in QuestionName]: boolean }>({
+    intro: !qs.type,
     testType: !qs.type,
     test: !test,
     testDate: !testDate,
@@ -61,6 +62,7 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
   });
 
   const questions: { [key in QuestionName]: any } = {
+    intro: open.intro,
     testType: !qs.type || open.testType,
     test: !test || open.test,
     testDate: !testDate || open.testDate,
@@ -80,6 +82,7 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
 
   useEffect(() => {
     setOpen({
+      intro: !qs.type,
       testType: !qs.type,
       test: !test,
       testDate: !testDate,
@@ -92,7 +95,11 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
   if (currentQuestionName && currentQuestionName !== "display") {
     return (
       <div className="flex lg:flex-row flex-col w-full items-center justify-center">
-        <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pr-8">
+        <div
+          className={`flex flex-col w-full py-4 lg:pr-8 ${
+            currentQuestionName === "intro" ? "" : "lg:w-1/2"
+          }`}
+        >
           <QuestionColumn
             // @ts-ignore
             questionName={currentQuestionName}
@@ -100,12 +107,14 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
             open={openQuestion}
           />
         </div>
-        <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pl-8">
-          <InfoColumn
-            // @ts-ignore
-            questionName={currentQuestionName}
-          />
-        </div>
+        {currentQuestionName !== "intro" ? (
+          <div className="flex flex-col w-full lg:w-1/2 py-4 lg:pl-8">
+            <InfoColumn
+              // @ts-ignore
+              questionName={currentQuestionName}
+            />
+          </div>
+        ) : null}
       </div>
     );
   }

@@ -22,8 +22,18 @@
   }
 
   button {
-    background-color: $primaryBlue;
+    background-color: lighten(black, 40);
     cursor: default;
+  }
+
+  button.intro {
+    background-color: $primaryBlue;
+    cursor: pointer;
+    transition: background-color 0.5s ease;
+
+    &:hover {
+      background-color: darken($primaryBlue, 7);
+    }
   }
 }
 

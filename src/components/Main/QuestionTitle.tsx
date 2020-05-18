@@ -27,6 +27,10 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
     testResult,
   } = props;
 
+  if (questionName === "intro") {
+    return <h2 className="question__question">About this tool</h2>;
+  }
+
   if (questionName === "testType") {
     return (
       <h3 className="question__question">What type of test did you take?</h3>

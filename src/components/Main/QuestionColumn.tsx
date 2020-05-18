@@ -4,6 +4,7 @@ import Select, { OptionTypeBase } from "react-select";
 import DatePicker from "react-datepicker";
 import { connect } from "react-redux";
 
+import Link from "../Link";
 import {
   QuestionProps,
   meetsRequirements,
@@ -56,6 +57,34 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
   let content;
 
   switch (questionName) {
+    case "intro": {
+      content = (
+        <>
+          <p className="mt-4">
+            The accuracy of your test result is a function not only of the
+            test's inherent{" "}
+            <Link href="https://www.wikiwand.com/en/Sensitivity_and_specificity">
+              "sensitivity" and "specificity"
+            </Link>
+            , but also of your prior likelihood to be positive or negative.
+          </p>
+          <p className="mb-4">
+            Using estimated Covid prevalence in your area as a proxy for prior,
+            this tool aims to help you understand the likelihood that your test
+            result is accurate
+          </p>
+          <div>
+            <button
+              className="intro mt-2 py-1 px-2 text-sm rounded-full text-white"
+              onClick={() => close("intro")}
+            >
+              Get started
+            </button>
+          </div>
+        </>
+      );
+      break;
+    }
     case "testType": {
       content = (
         <>
@@ -69,7 +98,9 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
             }
             // @ts-ignore
             onChange={(opt: OptionTypeBase) => {
-              dispatch(setTestType(opt.value));
+              if (testType !== opt.value) {
+                dispatch(setTestType(opt.value));
+              }
               close("testType");
             }}
             options={testTypes.map((opt) => ({
@@ -92,10 +123,12 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
             dispatch(setTest(opt.value as TestRecord));
             close("test");
           }}
-          options={(tests as TestRecord[]).map((test) => ({
-            value: test,
-            label: test.diagnostic,
-          }))}
+          options={(tests as TestRecord[])
+            .filter((t) => t.type === testType)
+            .map((test) => ({
+              value: test,
+              label: test.diagnostic,
+            }))}
         />
       );
       break;
@@ -200,9 +233,9 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       <QuestionTitle {...props} />
       {content}
 
-      {questionName === "display" ? null : (
+      {["intro", "display"].includes(questionName) ? null : (
         <div>
-          <button className="mt-2 py-1 px-2 text-sm rounded-full text-white">
+          <button className="mt-4 py-1 px-2 text-sm rounded-full text-white">
             {numLeft === 1
               ? "Last question"
               : `${numLeft - 1} more quick question${numLeft === 2 ? "" : "s"}`}

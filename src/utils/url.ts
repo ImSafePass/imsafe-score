@@ -7,9 +7,18 @@ export const updateSearch = (obj: object) => {
     .filter((k) => newSearch[k])
     .reduce((obj, k) => ({ ...obj, [k]: newSearch[k] }), {});
 
+  if (
+    Object.keys(filteredNewSearch).every(
+      (k) => (filteredNewSearch as any)[k] === prevSearch[k]
+    )
+  ) {
+    return false;
+  }
+
   const newUrl = window.location.href
     .split("?")[0]
     .concat(`?${queryString.stringify(filteredNewSearch)}`);
 
   window.history.replaceState({ path: newUrl }, "", newUrl);
+  return true;
 };

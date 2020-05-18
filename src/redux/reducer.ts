@@ -65,7 +65,7 @@ const rootReducer = (
     }
 
     case "SET_TEST_TYPE": {
-      updateSearch({ type: action.testType });
+      updateSearch({ type: action.testType, test: undefined });
       return { ...state, test: undefined };
     }
 

@@ -13,6 +13,7 @@ import { NytObject } from "../../utils/nyt";
 import { Prevalence, getPrevalenceFromState } from "../../utils/prevalence";
 
 export type QuestionName =
+  | "intro"
   | "testType"
   | "test"
   | "testDate"
@@ -81,7 +82,6 @@ export const meetsRequirements = (props: QuestionProps): boolean => {
     tests,
     location,
     prevalence,
-    stateOptions,
     stateCorrections,
     prevalenceMultiples,
     testDate,
@@ -93,6 +93,7 @@ export const meetsRequirements = (props: QuestionProps): boolean => {
   const meetsLocation = meetsTestDate && testDate;
   const meetsTestResult = location.state && location.county && prevalence;
   const requirements: { [key in QuestionName]: any } = {
+    intro: true,
     testType: true,
     test: meetsTest,
     testDate: meetsTestDate,

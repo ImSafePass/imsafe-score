@@ -14373,19 +14373,6 @@ p:not(:last-of-type) {
   margin-bottom: 2.5rem;
 }
 
-.card {
-  width: 100%;
-  background-color: #edf2f7;
-  border-radius: 0.125rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
-}
-
 strong {
   font-weight: 700;
 }

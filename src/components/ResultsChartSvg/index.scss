@@ -22,6 +22,11 @@
     font-size: 9px;
   }
 
+  .bar__percent--mid {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
   .bar-before {
     .bar__big {
       background-color: $lightBlue;
@@ -46,8 +51,6 @@
     }
 
     .bar__percent--mid {
-      font-size: 15px;
-      font-weight: 700;
       color: $red;
     }
   }
