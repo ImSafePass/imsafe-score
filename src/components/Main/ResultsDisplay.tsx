@@ -2,6 +2,7 @@ import React, { ComponentType } from "react";
 import { connect } from "react-redux";
 import numeral from "numeral";
 
+import { ReactComponent as Person } from "../../assets/person.svg";
 import { QuestionProps, mapStateToProps } from "./helpers";
 import { TestResult, TestRecord, TestType } from "../../utils/test";
 import bayesResults from "../../utils/bayes";
@@ -30,8 +31,10 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   const cases = (key: LowMidHigh) =>
     Math.round(prevalence.estimatedCaseObject[key] || 0);
   const caseString = (key: LowMidHigh) => numeral(cases(key)).format("0,0");
-  const percent = (key: LowMidHigh) =>
-    (cases(key) / prevalence.basePopulation).toFixed(2);
+  const percent = (key: LowMidHigh) => cases(key) / prevalence.basePopulation;
+  const percentString = (key: LowMidHigh) => percent(key).toFixed(2);
+
+  const falseRate = Math.round(100 - percent("mid"));
 
   const caseName =
     (testType as TestType) === "Molecular" ? "active cases" : "recovered cases";
@@ -125,11 +128,11 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
           </p>
           <p>
             This {caseString("mid")} "real"/"total" {caseName} represents
-            roughly or <strong>{percent("mid")}%</strong> of the local
+            roughly or <strong>{percentString("mid")}%</strong> of the local
             population. This estimate is based on a prevalence multiple, and
             represents a midpoint between estimated low and high prevalence of{" "}
-            {caseString("low")} ({percent("low")}%) and {caseString("high")} (
-            {percent("high")}%).
+            {caseString("low")} ({percentString("low")}%) and{" "}
+            {caseString("high")} ({percentString("high")}%).
           </p>
         </div>
         <div className="flex flex-col lg:w-1/3 w-full justify-start">
@@ -137,9 +140,31 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
             <p>
               All tests have the potential for error. Given test kit
               characteristics and the prevalence in your area, we would expect a{" "}
-              <em>“false positive” error</em> for <strong>22%</strong> of those
-              who received ‘positive’ result:
+              <em>"false {testResult?.toLocaleLowerCase()}" error</em> for{" "}
+              <strong>{falseRate}%</strong> of those who received a{" "}
+              {testResult?.toLocaleLowerCase()} result.
             </p>
+            {false ? (
+              <div className="my-4 mx-2">
+                {new Array(10).fill("").map((row, rowInd) => (
+                  <div
+                    className="row flex flex-row justify-between"
+                    style={{ marginBottom: 5 }}
+                    key={`row-${rowInd}`}
+                  >
+                    {new Array(10).fill("").map((person, personInd) => (
+                      <div
+                        className="person bg-white rounded-full flex items-center justify-center"
+                        style={{ width: 22, height: 22 }}
+                        key={`person=${rowInd}${personInd}`}
+                      >
+                        <Person width={18} height={18} />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
