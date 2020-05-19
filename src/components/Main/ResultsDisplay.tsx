@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import React, { ComponentType, useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import numeral from "numeral";
 
@@ -21,6 +21,31 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   testResult,
   location,
 }) => {
+  const [circleWidth, setCircleWidth] = useState(22);
+  const circleContainer = useRef(null);
+
+  useEffect(() => {
+    if (circleContainer && circleContainer.current) {
+      const calculateCircleWidth = () => {
+        const node = (circleContainer.current as unknown) as HTMLElement;
+        const nodeWidth =
+          node.getBoundingClientRect().width -
+          2 *
+            parseInt(
+              window.getComputedStyle(node, null).getPropertyValue("padding")
+            );
+        setCircleWidth(nodeWidth / (10 + 9 / 3)); // Each divider is a third the width of a circle
+      };
+      calculateCircleWidth();
+      window.addEventListener("resize", calculateCircleWidth);
+    }
+    // const circleContainer = document.getElementById(
+    //   "circle-container"
+    // ) as HTMLElement;
+    // let circleContainerWidth = 0;
+    // if (circleContainer) {
+    //   const ;
+  }, [circleContainer]);
   const results = bayesResults(
     prevalence,
     test as TestRecord,
@@ -31,10 +56,20 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   const cases = (key: LowMidHigh) =>
     Math.round(prevalence.estimatedCaseObject[key] || 0);
   const caseString = (key: LowMidHigh) => numeral(cases(key)).format("0,0");
-  const percent = (key: LowMidHigh) => cases(key) / prevalence.basePopulation;
+  const percent = (key: LowMidHigh) =>
+    (cases(key) / prevalence.basePopulation) * 100;
   const percentString = (key: LowMidHigh) => percent(key).toFixed(2);
 
-  const falseRate = Math.round(100 - percent("mid"));
+  const roundRate = Math.round(after.mid * 100);
+  const falseRate = Math.round(100 - roundRate);
+
+  const people = new Array(10)
+    .fill("")
+    .map((r, rowInd) =>
+      new Array(10)
+        .fill("")
+        .map((p, ind) => (rowInd * 10 + ind < roundRate ? true : false))
+    );
 
   const caseName =
     (testType as TestType) === "Molecular" ? "active cases" : "recovered cases";
@@ -66,6 +101,8 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   )} sensitivity and ${(test?.specificity.mid as number).toFixed(
     2
   )}% specificity`;
+
+  const circleColor = testResult === "Positive" ? "bg-red" : "bg-teal";
 
   return (
     <>
@@ -135,36 +172,47 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
             {caseString("high")} ({percentString("high")}%).
           </p>
         </div>
-        <div className="flex flex-col lg:w-1/3 w-full justify-start">
+        <div className="flex flex-col lg:w-1/3 w-full justify-start lg:mt-0 mt-8">
           <div className="card mb-8">
-            <p>
-              All tests have the potential for error. Given test kit
-              characteristics and the prevalence in your area, we would expect a{" "}
-              <em>"false {testResult?.toLocaleLowerCase()}" error</em> for{" "}
-              <strong>{falseRate}%</strong> of those who received a{" "}
-              {testResult?.toLocaleLowerCase()} result.
+            <p>All tests have the potential for error.</p>
+            <p className="mb-4">
+              Given test chracteristics and local prevalence, we suspect that
+              for every 100 people who tested {testResult?.toLowerCase()} in
+              your area, <strong>{falseRate}</strong> would be "false{" "}
+              {testResult?.toLowerCase()}s":
             </p>
-            {false ? (
-              <div className="my-4 mx-2">
-                {new Array(10).fill("").map((row, rowInd) => (
-                  <div
-                    className="row flex flex-row justify-between"
-                    style={{ marginBottom: 5 }}
-                    key={`row-${rowInd}`}
-                  >
-                    {new Array(10).fill("").map((person, personInd) => (
-                      <div
-                        className="person bg-white rounded-full flex items-center justify-center"
-                        style={{ width: 22, height: 22 }}
-                        key={`person=${rowInd}${personInd}`}
-                      >
-                        <Person width={18} height={18} />
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <div
+              className="my-2 p-4 bg-white rounded-sm justify-center items-center"
+              ref={circleContainer}
+            >
+              {people.map((row, rowInd) => (
+                <div
+                  className="flex flex-row justify-center"
+                  style={{ marginBottom: rowInd === 9 ? 0 : circleWidth / 3 }}
+                  key={`row-${rowInd}`}
+                >
+                  {row.map((person, personInd) => (
+                    <div
+                      className={`person rounded-full flex items-center justify-center ${
+                        person ? `${circleColor}-500` : `${circleColor}-200`
+                      }`}
+                      style={{
+                        width: circleWidth,
+                        height: circleWidth,
+                        marginRight: personInd === 9 ? 0 : circleWidth / 3,
+                      }}
+                      key={`person=${rowInd}${personInd}`}
+                    >
+                      {person ? (
+                        <p className="flex self-center text-white">
+                          {testResult === "Positive" ? "+" : "-"}
+                        </p>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
