@@ -62,7 +62,7 @@ export const noLowHigh = {
     eua_listed_by_fda: "Y",
     eua_approval: "4/16/2020",
     manufacturer: "GenoSensor, LLC",
-    diagnostic: "GS™ COVID-19 RT-PCR KIT",
+    diagnostic: "GS™ Covid-19 RT-PCR KIT",
     type: "Molecular",
     no_data: "https://www.fda.gov/media/137093/download",
     manufacturer_test_of_specificity: "99.81",

@@ -73,8 +73,8 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
         <h4 className="my-2">
           Chance that you{" "}
           {testType === "Serology"
-            ? "have antibodies for COVID-19"
-            : "have active COVID-19 infection"}
+            ? "have antibodies for Covid-19"
+            : "have active Covid-19 infection"}
           .
         </h4>
         <ResultsChart before={before} after={after} />

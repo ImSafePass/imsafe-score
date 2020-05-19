@@ -28,7 +28,7 @@ const Layout = ({ children }: Props) => {
           </div>
           <div className="flex flex-col lg:w-full w-1/2 justify-center lg:pl-8 lg:py-8 z-10 lg:mt-0 mt-4">
             <h2 className="text-white">
-              How accurate are my COVID-19 test results?
+              How accurate are my Covid-19 test results?
             </h2>
             <h5 className="text-white mt-4">
               Gain confidence in your risk profile.

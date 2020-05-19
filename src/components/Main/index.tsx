@@ -96,7 +96,7 @@ const Main = ({ testDate, test, location, testResult }: Props) => {
     !["display", "intro"].includes(currentQuestionName)
   ) {
     return (
-      <div className="flex lg:flex-row flex-col w-full items-center justify-center">
+      <div className="flex lg:flex-row flex-col w-full items-center justify-center my-12">
         <div
           className={`flex flex-col w-full py-4 lg:pr-8 ${
             currentQuestionName === "intro" ? "" : "lg:w-1/2"

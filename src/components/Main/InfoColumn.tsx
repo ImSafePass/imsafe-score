@@ -40,7 +40,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
   switch (questionName) {
     case "testType": {
       const description = `
-        A blood (**serology**) test gauges antibody levels which show that your body has responded to a COVID-19 infection.
+        A blood (**serology**) test gauges antibody levels which show that your body has responded to a Covid-19 infection.
         A swab, spit, or breath condensate (**molecular**) test looks to confirm an active infection.
       `;
       return comp(description);
@@ -79,7 +79,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
     case "location": {
       // Add national averages
       const description = `
-        On ${spelledWithYear(testDate as Date)} prevalence of COVID-19 ${
+        On ${spelledWithYear(testDate as Date)} prevalence of Covid-19 ${
         testType === "Serology" ? "antibodies" : "infection"
       } varied widely in the United States.
 
@@ -107,7 +107,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       const description = `
       On ${spelledWithYear(testDate as Date)} in ${location.state}, ${
         location.county
-      }, estimated prevalence for COVID-19 ${
+      }, estimated prevalence for Covid-19 ${
         testType === "Serology" ? "antibodies" : "infection"
       } ranged from between ${(low as number).toFixed(
         2
