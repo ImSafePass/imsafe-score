@@ -75,11 +75,14 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
       if (local) {
         console.log("TRACKING SUBMISSION", data);
       } else {
+        console.log("TRACKING");
         fetch(dynamoUrl, {
           method: "POST",
           body: JSON.stringify({ data }),
         })
-          .then(() => {})
+          .then((res) => {
+            console.log("SUCCESS", res);
+          })
           .catch((err) => {
             console.error(err, data);
           });
