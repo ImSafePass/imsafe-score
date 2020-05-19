@@ -62,6 +62,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
       const data = {
         testId: { S: test?.id },
         testName: { S: test?.diagnostic },
+        testType: { S: test?.type },
         testManufacturer: { S: test?.manufacturer },
         state: { S: location.state },
         county: { S: location.county },
@@ -75,15 +76,11 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
       if (local) {
         console.log("TRACKING SUBMISSION", data);
       } else {
-        console.log("TRACKING", data);
         fetch(dynamoUrl, {
           method: "POST",
           body: JSON.stringify(data),
         })
           .then((res) => res.json())
-          .then((json) => {
-            console.log("SUCCESS", { json, data });
-          })
           .catch((err) => {
             console.error(err, data);
           });
