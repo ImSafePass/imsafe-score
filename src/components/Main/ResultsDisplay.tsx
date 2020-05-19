@@ -81,7 +81,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
         })
           .then(() => {})
           .catch((err) => {
-            console.error(err);
+            console.error(err, data);
           });
       }
     }
