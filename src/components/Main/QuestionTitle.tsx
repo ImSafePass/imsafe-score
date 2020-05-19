@@ -28,7 +28,7 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
   } = props;
 
   if (questionName === "intro") {
-    return <h2 className="self-center">About this tool</h2>;
+    return <h1 className="self-center">About this tool</h1>;
   }
 
   if (questionName === "testType") {

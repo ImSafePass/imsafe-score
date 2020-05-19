@@ -4,6 +4,8 @@ import { ReactComponent as Wave } from "../assets/wave.svg";
 import { ReactComponent as Illustration } from "../assets/illustration.svg";
 import { ReactComponent as Logo } from "../assets/logo-white.svg";
 
+import Seo from "./Seo";
+
 interface Props {
   children: ReactChildren | ReactChild;
 }
@@ -50,6 +52,7 @@ const Layout = ({ children }: Props) => {
 
   return (
     <div className="h-screen">
+      <Seo />
       <div className="layout-top">
         <header className="bg-primary w-full">
           <div className="flex h-full justify-between container items-center mx-auto">
