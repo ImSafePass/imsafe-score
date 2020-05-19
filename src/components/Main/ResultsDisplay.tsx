@@ -90,18 +90,31 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
     if (circleContainer && circleContainer.current) {
       const calculateCircleWidth = () => {
         const node = (circleContainer.current as unknown) as HTMLElement;
-        const nodeWidth =
-          node.getBoundingClientRect().width -
-          2 *
-            parseInt(
-              window.getComputedStyle(node, null).getPropertyValue("padding")
-            );
-        setCircleWidth(nodeWidth / (10 + 9 / 3)); // Each divider is a third the width of a circle
+        const rect = node.getBoundingClientRect();
+        if (rect) {
+          const nodeWidth =
+            rect.width -
+            2 *
+              parseInt(
+                window.getComputedStyle(node, null).getPropertyValue("padding")
+              );
+          setCircleWidth(nodeWidth / (10 + 9 / 3)); // Each divider is a third the width of a circle
+        } else {
+          console.error("No rect", node, circleContainer);
+        }
       };
       calculateCircleWidth();
       window.addEventListener("resize", calculateCircleWidth);
     }
-  }, [circleContainer, resultsSaved, test, bayesResults]);
+  }, [
+    circleContainer,
+    resultsSaved,
+    test,
+    location.state,
+    location.county,
+    testDate,
+    testResult,
+  ]);
 
   const locationDateP = (
     <p>
