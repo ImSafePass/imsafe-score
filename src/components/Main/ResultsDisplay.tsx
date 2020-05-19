@@ -19,32 +19,12 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   test,
   testResult,
   location,
+  testDate,
 }) => {
+  const [resultsSaved, setResultsSaved] = useState(false);
   const [circleWidth, setCircleWidth] = useState(22);
   const circleContainer = useRef(null);
 
-  useEffect(() => {
-    if (circleContainer && circleContainer.current) {
-      const calculateCircleWidth = () => {
-        const node = (circleContainer.current as unknown) as HTMLElement;
-        const nodeWidth =
-          node.getBoundingClientRect().width -
-          2 *
-            parseInt(
-              window.getComputedStyle(node, null).getPropertyValue("padding")
-            );
-        setCircleWidth(nodeWidth / (10 + 9 / 3)); // Each divider is a third the width of a circle
-      };
-      calculateCircleWidth();
-      window.addEventListener("resize", calculateCircleWidth);
-    }
-    // const circleContainer = document.getElementById(
-    //   "circle-container"
-    // ) as HTMLElement;
-    // let circleContainerWidth = 0;
-    // if (circleContainer) {
-    //   const ;
-  }, [circleContainer]);
   const results = bayesResults(
     prevalence,
     test as TestRecord,
@@ -72,6 +52,55 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
 
   const caseName =
     (testType as TestType) === "Molecular" ? "active cases" : "recovered cases";
+
+  useEffect(() => {
+    const dynamoUrl =
+      "https://cn8r6588a8.execute-api.us-east-1.amazonaws.com/default/bayes-dynamo";
+
+    if (!resultsSaved) {
+      const local = window.location.href.includes("localhost");
+      const data = {
+        testId: { S: test?.id },
+        testName: { S: test?.diagnostic },
+        testManufacturer: { S: test?.manufacturer },
+        state: { S: location.state },
+        county: { S: location.county },
+        testResult: { S: testResult },
+        testDate: { S: testDate },
+        local: { BOOL: local },
+      };
+
+      setResultsSaved(true);
+
+      if (local) {
+        console.log("TRACKING SUBMISSION", data);
+      } else {
+        fetch(dynamoUrl, {
+          method: "POST",
+          body: JSON.stringify({ data }),
+        })
+          .then(() => {})
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    }
+
+    if (circleContainer && circleContainer.current) {
+      const calculateCircleWidth = () => {
+        const node = (circleContainer.current as unknown) as HTMLElement;
+        const nodeWidth =
+          node.getBoundingClientRect().width -
+          2 *
+            parseInt(
+              window.getComputedStyle(node, null).getPropertyValue("padding")
+            );
+        setCircleWidth(nodeWidth / (10 + 9 / 3)); // Each divider is a third the width of a circle
+      };
+      calculateCircleWidth();
+      window.addEventListener("resize", calculateCircleWidth);
+    }
+  }, [circleContainer, resultsSaved, test, bayesResults]);
 
   const locationDateP = (
     <p>
