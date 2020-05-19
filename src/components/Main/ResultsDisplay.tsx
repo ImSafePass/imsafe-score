@@ -78,7 +78,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
         console.log("TRACKING", data);
         fetch(dynamoUrl, {
           method: "POST",
-          body: JSON.stringify({ data }),
+          body: JSON.stringify(data),
         })
           .then((res) => res.json())
           .then((json) => {
