@@ -80,8 +80,9 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
           method: "POST",
           body: JSON.stringify({ data }),
         })
-          .then((res) => {
-            console.log("SUCCESS", res);
+          .then((res) => res.json())
+          .then((json) => {
+            console.log("SUCCESS", json);
           })
           .catch((err) => {
             console.error(err, data);
