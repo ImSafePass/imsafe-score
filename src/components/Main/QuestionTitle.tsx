@@ -28,7 +28,7 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
   } = props;
 
   if (questionName === "intro") {
-    return <h2 className="question__question">About this tool</h2>;
+    return <h2 className="self-center">About this tool</h2>;
   }
 
   if (questionName === "testType") {
@@ -132,7 +132,7 @@ const QuestionTitle: React.SFC<QuestionProps> = (props) => {
   }
 
   return (
-    <h3 className="question__question">
+    <h3 className="question__question mt-8">
       {allButResultEl}
       <br />
       <U>Your result was '</U>

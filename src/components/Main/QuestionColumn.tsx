@@ -59,8 +59,8 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
   switch (questionName) {
     case "intro": {
       content = (
-        <>
-          <p className="mt-4">
+        <div className="max-w-3xl self-center">
+          <p className="mt-8">
             The accuracy of your test result is a function not only of the
             test's inherent{" "}
             <Link href="https://www.wikiwand.com/en/Sensitivity_and_specificity">
@@ -68,7 +68,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
             </Link>
             , but also of your prior likelihood to be positive or negative.
           </p>
-          <p className="mb-4">
+          <p className="mb-8">
             Using estimated Covid prevalence in your area as a proxy for prior,
             this tool aims to help you understand the likelihood that your test
             result is accurate
@@ -81,7 +81,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
               Get started
             </button>
           </div>
-        </>
+        </div>
       );
       break;
     }

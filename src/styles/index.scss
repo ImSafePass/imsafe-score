@@ -5,10 +5,15 @@ header {
   height: #{$headerHeight}px;
 }
 
+.footer {
+  height: #{$footerHeight}px;
+}
+
 .page {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  min-height: calc(100vh - #{$headerHeight}px - #{$footerHeight}px);
 }
 
 .hero {

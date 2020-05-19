@@ -157,7 +157,7 @@ const Home = ({
   ]);
 
   return (
-    <div className="page" style={{ minHeight: window.innerHeight / 1.5 }}>
+    <div className="page">
       <div className="h-full flex flex-col items-center">
         <div className="w-full h-full">
           <URLDispatcher
