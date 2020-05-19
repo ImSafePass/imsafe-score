@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 
 import { TriplePoint } from "../../utils/bayes";
 
@@ -91,6 +91,7 @@ const ResultsChart = ({ before, after }: Props) => {
             <div
               className="absolute"
               style={{ left: `calc(${ind * 20}% - 5px)` }}
+              key={ind}
             >
               <div
                 style={{

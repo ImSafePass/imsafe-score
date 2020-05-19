@@ -2,7 +2,7 @@ import React from "react";
 
 interface Props {
   href: string;
-  children: string;
+  children: React.ReactChild;
 }
 
 export default ({ href, children }: Props) => (

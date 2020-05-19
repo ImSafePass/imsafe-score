@@ -2,7 +2,6 @@ import React, { ComponentType, useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import numeral from "numeral";
 
-import { ReactComponent as Person } from "../../assets/person.svg";
 import { QuestionProps, mapStateToProps } from "./helpers";
 import { TestResult, TestRecord, TestType } from "../../utils/test";
 import bayesResults from "../../utils/bayes";
@@ -98,9 +97,15 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
 
   const testAccuracyText = `${(test?.sensitivity.mid as number).toFixed(
     2
-  )} sensitivity and ${(test?.specificity.mid as number).toFixed(
-    2
-  )}% specificity`;
+  )}% sensitivity${
+    test?.sensitivity.mid === 100
+      ? " (rounded to 99 for more sensible probability)"
+      : ""
+  } and ${(test?.specificity.mid as number).toFixed(2)}% specificity${
+    test?.specificity.mid === 100
+      ? " (rounded to 99 for more sensible probability)"
+      : ""
+  }`;
 
   const circleColor = testResult === "Positive" ? "bg-red" : "bg-teal";
 

@@ -56,7 +56,10 @@ const Layout = ({ children }: Props) => {
       <div className="layout-top">
         <header className="bg-primary w-full">
           <div className="flex h-full justify-between container items-center mx-auto">
-            <div className="flex flex-row items-center">
+            <div
+              className="flex flex-row items-center cursor-pointer"
+              onClick={() => (window.location.search = "")}
+            >
               <Logo width={35} />
               <h3 className="text-white ml-4">ImSafe Health</h3>
             </div>

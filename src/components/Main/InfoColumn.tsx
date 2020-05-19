@@ -54,24 +54,46 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       const intro = t.fdaApprovalDate
         ? `This is an FDA-authorized test with a stated accuracy of`
         : `This test has a stated accuracy (${t.chosenTestEntity} measure) of`;
-      const deets = `${(t.sensitivity.mid as number).toFixed(
+      const deets = `**${(t.sensitivity.mid as number).toFixed(
         2
-      )} sensitivity and ${(t.specificity.mid as number).toFixed(
+      )}% sensitivity** and **${(t.specificity.mid as number).toFixed(
         2
-      )}% specificity.`;
-      const tScores = (tests as TestRecord[]).map(
-        (t) => (t.specificity.mid as number) + (t.sensitivity.mid as number)
-      );
-      const sorted = tScores.sort();
-      const ranking = sorted.indexOf(
-        (t.sensitivity.mid as number) + (t.specificity.mid as number)
-      );
+      )}% specificity**`;
+
+      const rank = (tst: TestRecord) => {
+        const average = (scores: Array<number | undefined>): number => {
+          const presentScoresArray: number[] = scores.reduce(
+            (arr: number[], score: number | undefined) =>
+              score ? [...arr, score] : arr,
+            []
+          );
+          const sumOfScores = presentScoresArray.reduce(
+            (sum, score) => sum + score,
+            0
+          );
+          return sumOfScores / presentScoresArray.length;
+        };
+
+        return average([
+          average(Object.values(tst.sensitivity)),
+          average(Object.values(tst.specificity)),
+        ]);
+      };
+
+      const tScores = (tests as TestRecord[])
+        .filter((t) => t.type === testType)
+        .map((tst) => rank(tst));
+      const sorted = tScores.sort((a, b) => b - a);
+
+      const ranking = sorted.indexOf(rank(t));
 
       const description = `
         ${intro} ${deets}.
-        It is the ${numeral(ranking + 1).format(
+        These numbers are imperfectly accurate. If taken directly, they make it the **${numeral(
+          ranking + 1
+        ).format(
           "0o"
-        )} most accurate test we are aware of currently in the US market.
+        )} most accurate ${testType?.toLowerCase()} test** we are aware of currently in the US market, factoring in confidence intervals where given.
       `;
 
       return comp(description);

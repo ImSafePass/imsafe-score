@@ -1,12 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import ReactGA from "react-ga";
 
 import "./index.generated.css";
 import "./styles/index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./redux/store";
+
+ReactGA.initialize("UA-167121008-1");
 
 ReactDOM.render(
   <React.StrictMode>
