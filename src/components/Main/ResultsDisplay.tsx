@@ -131,7 +131,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
 
   const locationDateP = (
     <p>
-      Our estimates of prevalence are based on the number if known and likely{" "}
+      Our estimates of prevalence are based on the number of known and likely{" "}
       {caseName} in{" "}
       <strong>
         {location.county}, {location.state}
@@ -210,10 +210,10 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
             of which known cases are a subset.
           </p>
           <p>
-            Such "real" remains -- and will always remain -- unknown, but models
-            for predicting it based on known cases are improving. The below
-            estimates use publicly reported cases, and apply a midrange in a set
-            of public prevalence models.
+            Such "real" prevalence remains -- and will always remain -- unknown,
+            but models for predicting it based on known cases are improving. The
+            below estimates use publicly reported cases, and apply a midrange in
+            a set of public prevalence models.
           </p>
           <h5 className="my-4">Local Prevalence</h5>
           {locationDateP}
