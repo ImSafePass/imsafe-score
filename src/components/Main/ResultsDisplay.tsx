@@ -4,7 +4,7 @@ import numeral from "numeral";
 
 import { QuestionProps, mapStateToProps } from "./helpers";
 import { TestResult, TestRecord, TestType } from "../../utils/test";
-import bayesResults from "../../utils/bayes";
+import bayesResults, { TriplePoint } from "../../utils/bayes";
 import { LowMidHigh } from "../../redux/reducer";
 import {
   fullTestType,
@@ -30,7 +30,23 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
     test as TestRecord,
     testResult as TestResult
   );
-  const { before, after } = results;
+  let { before, after } = results;
+
+  const roundRate = Math.round(after.mid * 100);
+  const falseRate = Math.round(100 - roundRate);
+
+  if (testResult === "Negative") {
+    before = {
+      low: 1 - before.low,
+      mid: 1 - before.mid,
+      high: 1 - before.high,
+    };
+    after = {
+      low: after.low && 1 - after.low,
+      mid: 1 - after.mid,
+      high: after.high && 1 - after.high,
+    };
+  }
 
   const cases = (key: LowMidHigh) =>
     Math.round(prevalence.estimatedCaseObject[key] || 0);
@@ -38,9 +54,6 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   const percent = (key: LowMidHigh) =>
     (cases(key) / prevalence.basePopulation) * 100;
   const percentString = (key: LowMidHigh) => percent(key).toFixed(2);
-
-  const roundRate = Math.round(after.mid * 100);
-  const falseRate = Math.round(100 - roundRate);
 
   const people = new Array(10)
     .fill("")
