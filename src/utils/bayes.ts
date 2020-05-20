@@ -47,7 +47,7 @@ const bayesResults = (
       if (rawSpecificity && rawSensitivity) {
         const process = (raw: number) => {
           const result = raw / 100;
-          return result === 1 ? 0.99 : result || 0.01;
+          return result === 1 ? 0.9999 : result || 0.0001;
         };
 
         const specificity = process(rawSpecificity as number);

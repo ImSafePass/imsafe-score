@@ -50,8 +50,8 @@ describe("bayes", () => {
 
     expect(prep(after)).toEqual({
       low: "0.8943",
-      mid: "0.9460",
-      high: "0.9737",
+      mid: "0.9465",
+      high: "0.9739",
     });
     //   low: "0.894", // I don't thiink this is right -- I get 89.57%
     //   mid: "0.946", // I don't thiink this is right -- I get 94.73%
@@ -74,9 +74,9 @@ describe("bayes", () => {
     });
 
     expect(prep(after)).toEqual({
-      high: "0.8895",
+      high: "0.8905",
       low: "0.6482",
-      mid: "0.7923",
+      mid: "0.7939",
     });
     //   low: "0.648", // I get 63.96%
     //   mid: "0.794", // I get 78.77%
@@ -100,8 +100,8 @@ describe("bayes", () => {
 
     expect(prep(after)).toEqual({
       low: "0.9991",
-      high: "0.9999",
-      mid: "0.9999",
+      high: "1.0000",
+      mid: "1.0000",
     });
   });
 
@@ -150,9 +150,9 @@ describe("bayes", () => {
     });
 
     expect(prep(after)).toEqual({
-      high: "0.9999",
-      low: "0.9999",
-      mid: "0.9999",
+      high: "1.0000",
+      low: "1.0000",
+      mid: "1.0000",
     });
   });
 });

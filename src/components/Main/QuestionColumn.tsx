@@ -139,6 +139,7 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
         <DatePicker
           className="w-40 p-1 rounded-md my-4"
           selected={testDate}
+          placeholderText="Select Date"
           onChange={(date: Date) => {
             dispatch(setTestDate(date));
           }}

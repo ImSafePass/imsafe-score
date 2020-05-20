@@ -2,8 +2,14 @@ import React, { ComponentType, useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import numeral from "numeral";
 
+import { asPercent } from "../../utils/number";
 import { QuestionProps, mapStateToProps } from "./helpers";
-import { TestResult, TestRecord, TestType } from "../../utils/test";
+import {
+  TestResult,
+  TestRecord,
+  TestType,
+  SpecificityOrSensitivity,
+} from "../../utils/test";
 import bayesResults, { TriplePoint } from "../../utils/bayes";
 import { LowMidHigh } from "../../redux/reducer";
 import {
@@ -13,28 +19,23 @@ import {
 } from "../../utils/prevalence";
 import ResultsChart from "../ResultsChartSvg";
 
-const ResultsDisplay: React.SFC<QuestionProps> = ({
-  testType,
-  prevalence,
-  test,
-  testResult,
-  location,
-  testDate,
-}) => {
+const ResultsDisplay: React.SFC<QuestionProps> = (props) => {
+  const { prevalence, location, testDate } = props;
+  const test = props.test as TestRecord;
+  const testResult = props.testResult as TestResult;
+  const testType = props.testType as TestType;
+
   const [resultsSaved, setResultsSaved] = useState(false);
   const [circleWidth, setCircleWidth] = useState(22);
   const circleContainer = useRef(null);
 
-  const results = bayesResults(
-    prevalence,
-    test as TestRecord,
-    testResult as TestResult
-  );
+  const results = bayesResults(prevalence, test, testResult);
   let { before, after } = results;
 
   const roundRate = Math.round(after.mid * 100);
   const falseRate = Math.round(100 - roundRate);
 
+  // Reverse charts for negative results
   if (testResult === "Negative") {
     before = {
       low: 1 - before.low,
@@ -53,7 +54,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
   const caseString = (key: LowMidHigh) => numeral(cases(key)).format("0,0");
   const percent = (key: LowMidHigh) =>
     (cases(key) / prevalence.basePopulation) * 100;
-  const percentString = (key: LowMidHigh) => percent(key).toFixed(2);
+  const percentString = (key: LowMidHigh) => asPercent(percent(key));
 
   const people = new Array(10)
     .fill("")
@@ -73,10 +74,10 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
     if (!resultsSaved) {
       const local = window.location.href.includes("localhost");
       const data = {
-        testId: { S: test?.id },
-        testName: { S: test?.diagnostic },
-        testType: { S: test?.type },
-        testManufacturer: { S: test?.manufacturer },
+        testId: { S: test.id },
+        testName: { S: test.diagnostic },
+        testType: { S: test.type },
+        testManufacturer: { S: test.manufacturer },
         state: { S: location.state },
         county: { S: location.county },
         testResult: { S: testResult },
@@ -147,21 +148,41 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
     </p>
   );
 
-  const testMeasureSourceText = test?.fdaApprovalDate
+  const testMeasureSourceText = test.fdaApprovalDate
     ? `This is an FDA-authorized test with a stated accuracy of`
-    : `This test has a stated accuracy (${test?.chosenTestEntity} measure) of`;
+    : `This test has a stated accuracy (${test.chosenTestEntity} measure) of`;
 
-  const testAccuracyText = `${(test?.sensitivity.mid as number).toFixed(
-    2
-  )}% sensitivity${
-    test?.sensitivity.mid === 100
-      ? " (rounded to 99 for more sensible probability)"
-      : ""
-  } and ${(test?.specificity.mid as number).toFixed(2)}% specificity${
-    test?.specificity.mid === 100
-      ? " (rounded to 99 for more sensible probability)"
-      : ""
-  }`;
+  const measure = (
+    key: "sensitivity" | "specificity",
+    point: LowMidHigh = "mid"
+  ) => {
+    const score = test[key][point];
+    if (score) {
+      return asPercent(score);
+    } else {
+      return null;
+    }
+  };
+
+  const fullMeasure = (key: "sensitivity" | "specificity") => {
+    const hasCI = !!measure(key, "low");
+    const isRounded = measure(key) === "100%";
+
+    return `${measure(key)} ${key}${
+      isRounded || hasCI
+        ? ` (${
+            hasCI
+              ? `from ${measure(key, "low")}-${measure(
+                  key,
+                  "high"
+                )} with 95% certainty`
+              : ""
+          }${hasCI && isRounded ? ", and " : ""}${
+            isRounded ? "rounded to 99.99% for more realistic probability" : ""
+          })`
+        : ""
+    }`;
+  };
 
   const circleColor = testResult === "Positive" ? "bg-red" : "bg-teal";
 
@@ -196,11 +217,17 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
           <p>
             You took{" "}
             <strong>
-              {test?.diagnostic} by {test?.manufacturer}
+              {test.diagnostic} by {test.manufacturer}
             </strong>
-            . {testMeasureSourceText} {testAccuracyText}. Your likelihood of a
-            true {testResult?.toLocaleLowerCase()} also depends on your prior
-            probability of infection.
+            . {testMeasureSourceText}{" "}
+            {`${[fullMeasure("sensitivity"), fullMeasure("specificity")].join(
+              " and "
+            )}`}
+            .
+          </p>
+          <p>
+            Your likelihood of a true {testResult?.toLocaleLowerCase()} also
+            depends on your prior probability of infection.
           </p>
           <h5 className="my-4">Prior Probability</h5>
           <p>
@@ -226,13 +253,14 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
           </p>
           <p>
             This {caseString("mid")} "real"/"total" {caseName} represents
-            roughly or <strong>{percentString("mid")}%</strong> of the local
+            roughly <strong>{percentString("mid")}</strong> of the local
             population. This estimate is based on a prevalence multiple, and
             represents a midpoint between estimated low and high prevalence of{" "}
-            {caseString("low")} ({percentString("low")}%) and{" "}
-            {caseString("high")} ({percentString("high")}%).
+            {caseString("low")} ({percentString("low")}) and{" "}
+            {caseString("high")} ({percentString("high")}).
           </p>
         </div>
+
         <div className="flex flex-col lg:w-1/3 w-full justify-start lg:mt-0 mt-8">
           <div className="card mb-8">
             <p>All tests have the potential for error.</p>
@@ -240,7 +268,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = ({
               Given test chracteristics and local prevalence, we suspect that
               for every 100 people who tested {testResult?.toLowerCase()} in
               your area, <strong>{falseRate}</strong> would be "false{" "}
-              {testResult?.toLowerCase()}s":
+              {testResult.toLowerCase()}s":
             </p>
             <div
               className="my-2 p-4 bg-white rounded-sm justify-center items-center"

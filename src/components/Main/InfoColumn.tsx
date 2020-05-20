@@ -7,6 +7,7 @@ import { TestRecord } from "../../utils/test";
 import { LowMidHigh } from "../../redux/reducer";
 import { spelledWithYear } from "../../utils/date";
 import { TriplePoint } from "../../utils/bayes";
+import { asPercent } from "../../utils/number";
 import { ReactComponent as Caret } from "../../assets/caret.svg";
 
 import { mapStateToProps, QuestionProps, meetsRequirements } from "./helpers";
@@ -54,11 +55,11 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       const intro = t.fdaApprovalDate
         ? `This is an FDA-authorized test with a stated accuracy of`
         : `This test has a stated accuracy (${t.chosenTestEntity} measure) of`;
-      const deets = `**${(t.sensitivity.mid as number).toFixed(
-        2
-      )}% sensitivity** and **${(t.specificity.mid as number).toFixed(
-        2
-      )}% specificity**`;
+      const deets = `**${asPercent(
+        t.sensitivity.mid as number
+      )} sensitivity** and **${asPercent(
+        t.specificity.mid as number
+      )} specificity**`;
 
       const rank = (tst: TestRecord) => {
         const average = (scores: Array<number | undefined>): number => {
@@ -129,17 +130,17 @@ const InfoColumns: React.SFC<QuestionProps> = (props) => {
       const description = `
       On ${spelledWithYear(testDate as Date)} in ${location.state}, ${
         location.county
-      }, estimated prevalence for Covid-19 ${
+      }, our estimated prevalence for Covid-19 ${
         testType === "Serology" ? "antibodies" : "infection"
-      } ranged from between ${(low as number).toFixed(
-        2
-      )}% and ${(high as number).toFixed(
-        2
-      )}% with our base case of ${mid.toFixed(2)}%.
+      } ranged from between ${asPercent((low as number) * 100)} and ${asPercent(
+        (high as number) * 100
+      )} with our base case of ${asPercent(mid * 100)} (${numeral(
+        estimatedCaseObject.mid
+      ).format("0,0")} out of ${numeral(basePopulation).format("0,0")}).
 
-      We consider ${mid.toFixed(
-        2
-      )}% to be your pre-test probability of being positive for antibodies.
+      We consider ${asPercent(
+        mid * 100
+      )} to be your pre-test probability of being positive for antibodies.
       `;
       return comp(description);
     }
