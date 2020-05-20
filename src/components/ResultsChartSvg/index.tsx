@@ -3,6 +3,7 @@ import React from "react";
 import { TriplePoint } from "../../utils/bayes";
 
 import "./index.scss";
+import { LocationState } from "../../redux/reducer";
 
 interface Props {
   before: {
@@ -11,6 +12,7 @@ interface Props {
     high: number;
   };
   after: TriplePoint;
+  location: LocationState;
 }
 
 const Bar = ({
@@ -24,8 +26,10 @@ const Bar = ({
     className={`bar-${beforeOrAfter.toLocaleLowerCase()} w-full flex flex-row items-center`}
     style={{ height: 80 }}
   >
-    <div style={{ minWidth: 100 }}>
-      <p className="text-right pr-4">{beforeOrAfter} test</p>
+    <div style={{ minWidth: 80 }}>
+      <p className="text-right pr-4" style={{ fontSize: 14 }}>
+        {beforeOrAfter === "Before" ? "Pre" : "Post"} test
+      </p>
     </div>
     <div className="w-full relative flex flex-row items-center">
       {data.low && data.high ? (
@@ -78,7 +82,7 @@ const ResultsChart = ({ before, after }: Props) => {
       <Bar beforeOrAfter="After" data={after} />
 
       {/* Ticks */}
-      <div className="relative" style={{ marginLeft: 100 }}>
+      <div className="relative" style={{ marginLeft: 80 }}>
         <div
           className="relative"
           style={{
@@ -100,28 +104,52 @@ const ResultsChart = ({ before, after }: Props) => {
                   transform: "rotate(90deg)",
                 }}
               />
-              <p className="mt-2 text-xs">{ind * 20}%</p>
+              <p
+                className="mt-2 text-xs"
+                style={{
+                  marginLeft: -(((ind * 20).toString().length - 1) * 2),
+                }}
+              >
+                {ind * 20}%
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Prevalence indicator */}
-        {/* <div
-          style={{
-            borderBottom: "1px solid #aaa",
-            left: `${before.low * 100}%`,
-            width: `${(before.high - before.low) * 100}%`,
-          }}
-        />
-        <div
-          style={{
-            left: `calc(${before.low * 100}%)`,
-            width: 10,
-            transform: "rotate(90deg)",
-            marginBottom: 5,
-            borderBottom: "1px solid #aaa",
-          }}
-        /> */}
+        {/* Confidence indicator */}
+        {after.low && after.high ? (
+          <div
+            className="relative confidence-interval"
+            style={{
+              left: `${after.low * 100}%`,
+              width: `${(after.high - after.low) * 100}%`,
+            }}
+          >
+            <div
+              style={{
+                borderStyle: "solid",
+                borderColor: "#aaa",
+                borderWidth: 1,
+                borderTopWidth: 0,
+                width: "100%",
+                height: 5,
+              }}
+            />
+            <div
+              style={{
+                height: 5,
+                left: "50%",
+                borderRight: "1px solid #aaa",
+                position: "absolute",
+              }}
+            />
+            <div className="text-center w-full">
+              <p className="mt-2" style={{ color: "#aaa", fontSize: 14 }}>
+                95% Test Confidence Interval
+              </p>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

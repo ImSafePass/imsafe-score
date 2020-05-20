@@ -196,7 +196,7 @@ const ResultsDisplay: React.SFC<QuestionProps> = (props) => {
             : "have active Covid-19 infection"}
           .
         </h4>
-        <ResultsChart before={before} after={after} />
+        <ResultsChart before={before} after={after} location={location} />
       </div>
 
       <div className="flex lg:flex-row flex-col mb-10">
