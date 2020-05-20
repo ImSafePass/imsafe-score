@@ -10,6 +10,7 @@ import {
 } from "../redux/reducer";
 import get from "lodash.get";
 import { TriplePoint } from "./bayes";
+import { localLog } from "./local";
 
 type EstimatedCaseObject = { [K in LowMidHigh]: number };
 
@@ -78,6 +79,17 @@ export const getPrevalenceFromState = (state: ReduxState) => {
   lowMidHigh.forEach((key) => {
     estimatedCaseObject[key] =
       prevalenceMultiples[key].value * stateCorrection * relevantRawCases;
+  });
+
+  localLog("CALCULATING PREVALENCE", {
+    countyData,
+    testDate,
+    relevantDates: dates,
+    testType: test.type,
+    testObject: test,
+    stateCorrection,
+    basePopulation: location.countyPopulation,
+    estimatedCaseObject,
   });
 
   return {

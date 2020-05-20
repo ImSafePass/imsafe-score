@@ -1,6 +1,7 @@
 import { Prevalence } from "./prevalence";
 import { TestRecord, TestResult } from "./test";
 import { LowMidHigh } from "../redux/reducer";
+import { localLog } from "./local";
 
 export interface TriplePoint {
   low?: number;
@@ -83,6 +84,13 @@ const bayesResults = (
           mid: pop.mid ? 1 - pop.mid : pop.mid,
           high: pop.low ? 1 - pop.low : pop.low,
         } as ReliableTriplePoint);
+
+  localLog("IN BAYES CALCULATION", {
+    beforeTest: before,
+    afterTest: after,
+    prevalenceObject: prevalence,
+    testObject: test,
+  });
 
   return { before, after };
 };
