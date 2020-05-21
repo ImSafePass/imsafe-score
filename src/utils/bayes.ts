@@ -77,16 +77,28 @@ const bayesPredictiveValue =
       (specificity * (1 - priorProbability) +
         (1 - sensitivity) * priorProbability);
 
-WITH PRESENT VALUES (${testResult} result):
+WITH VALUES:
+
+const bayesPredictiveValue =
+  testResult === "Positive"
+    ? (${sensitivity} * ${priorProbability}) /
+      (${sensitivity} * ${priorProbability} +
+        (1 - ${specificity}) * (1 - ${priorProbability}))
+    : (${specificity} * (1 - ${priorProbability})) /
+      (${specificity} * (1 - ${priorProbability}) +
+        (1 - ${sensitivity}) * ${priorProbability});
+}
+
+GIVEN ${testResult.toUpperCase()} RESULT:
 
 ${
   testResult === "Positive"
     ? `(${sensitivity} * ${priorProbability}) /
   (${sensitivity} * ${priorProbability} +
-    (1 - ${specificity}) * (1 - ${priorProbability}))`
-    : `(${specificity} * (1 - ${priorProbability})) /
-  (${specificity} * (1 - ${priorProbability}) +
-    (1 - ${sensitivity}) * ${priorProbability})`
+    ${1 - specificity} * ${1 - priorProbability})`
+    : `(${specificity} * ${1 - priorProbability}) /
+  (${specificity} * ${1 - priorProbability} +
+    ${1 - sensitivity} * ${priorProbability})`
 }
 
 PRESENT VALUES:
