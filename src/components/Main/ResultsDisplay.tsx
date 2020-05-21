@@ -4,13 +4,8 @@ import numeral from "numeral";
 
 import { asPercent } from "../../utils/number";
 import { QuestionProps, mapStateToProps } from "./helpers";
-import {
-  TestResult,
-  TestRecord,
-  TestType,
-  SpecificityOrSensitivity,
-} from "../../utils/test";
-import bayesResults, { TriplePoint } from "../../utils/bayes";
+import { TestResult, TestRecord, TestType } from "../../utils/test";
+import bayesResults from "../../utils/bayes";
 import { LowMidHigh } from "../../redux/reducer";
 import {
   fullTestType,

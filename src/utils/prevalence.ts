@@ -10,7 +10,7 @@ import {
 } from "../redux/reducer";
 import get from "lodash.get";
 import { TriplePoint } from "./bayes";
-import { localLog } from "./local";
+import { localLog } from "./log";
 
 type EstimatedCaseObject = { [K in LowMidHigh]: number };
 
